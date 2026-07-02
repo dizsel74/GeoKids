@@ -1,0 +1,59 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Playful 3D Geometric Scene as the Logo -->
+    <!-- Shadow for depth -->
+    <path
+        android:fillColor="#15000000"
+        android:pathData="M25,82 L83,82 L70,90 L38,90 Z" />
+
+    <!-- 3D CUBE (Left/Center) -->
+    <!-- Left face of Cube (Reddish orange) -->
+    <path
+        android:fillColor="#FF5A36"
+        android:pathData="M28,52 L48,60 L48,82 L28,74 Z" />
+    <!-- Front face of Cube (Coral Red) -->
+    <path
+        android:fillColor="#EF4444"
+        android:pathData="M48,60 L68,52 L68,74 L48,82 Z" />
+    <!-- Top face of Cube (Warm Peach) -->
+    <path
+        android:fillColor="#FFAC9A"
+        android:pathData="M28,52 L48,34 L68,52 L48,60 Z" />
+    <!-- White highlights on cube edges -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:pathData="M48,60 L48,82 M28,52 L48,60 L68,52" />
+
+    <!-- 3D PYRAMID (Right/Top overlapping) -->
+    <!-- Left Face of Pyramid (Medium Blue) -->
+    <path
+        android:fillColor="#2563EB"
+        android:pathData="M78,72 L58,78 L52,36 Z" />
+    <!-- Right Face of Pyramid (Deep Blue) -->
+    <path
+        android:fillColor="#1D4ED8"
+        android:pathData="M78,72 L94,64 L52,36 Z" />
+    <!-- Light Highlights on Pyramid (Cyan Accent) -->
+    <path
+        android:strokeColor="#60A5FA"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:pathData="M78,72 L52,36" />
+
+    <!-- A small cute star decoration on top left -->
+    <path
+        android:fillColor="#F59E0B"
+        android:pathData="M35,26 L37,30 L41,30 L38,33 L39,37 L35,35 L31,37 L32,33 L29,30 L33,30 Z" />
+
+    <!-- A small cute star decoration on bottom right -->
+    <path
+        android:fillColor="#10B981"
+        android:pathData="M82,32 L83.5,35 L87,35 L84,37.5 L85,41 L82,39 L79,41 L80,37.5 L77,35 L80.5,35 Z" />
+
+</vector>
