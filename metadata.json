@@ -1,6 +1,6 @@
 {
   "name": "Geometry Kids",
-  "description": "Interactive bilingual (Spanish/English) geometry explorer for kids to learn 2D-to-3D transitions, vertices, edges, and faces.",
+  "description": "Interactive 3D geometry explorer for kids in US English featuring automated text-to-speech pronunciation, adaptive 2D-to-3D lessons, flashcards, quizzes, and a secret Mexican Spanish translation mode!",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

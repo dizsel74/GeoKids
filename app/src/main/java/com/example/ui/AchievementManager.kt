@@ -58,8 +58,8 @@ object AchievementManager {
     }
 
     // Achievement checklist helpers
-    fun hasExploredAll(): Boolean = exploredShapes.size >= 3 // Cube, Rectangular Prism, Pyramid
-    fun hasFlippedAll(): Boolean = flippedCards.size >= 5 // All 5 flashcards
-    fun hasHighQuizScore(): Boolean = quizHighScore >= 4
-    fun hasPerfectQuizScore(): Boolean = quizHighScore == 5
+    fun hasExploredAll(): Boolean = exploredShapes.size >= 5 // Cube, Rectangular Prism, Triangular Prism, Square-based Pyramid, Triangular Pyramid
+    fun hasFlippedAll(): Boolean = flippedCards.size >= 12 // All 12 flashcards
+    fun hasHighQuizScore(): Boolean = quizHighScore >= 8
+    fun hasPerfectQuizScore(): Boolean = quizHighScore == 10
 }

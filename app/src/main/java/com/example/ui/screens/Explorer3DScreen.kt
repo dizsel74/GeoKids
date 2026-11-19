@@ -3,6 +3,8 @@ package com.example.ui.screens
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -50,8 +52,8 @@ sealed class GeometricShape(
 
     object RectangularPrism : GeometricShape(
         id = "prism",
-        nameEs = "Prisma Rectangular",
-        nameEn = "Rectangular Prism",
+        nameEs = "Prisma rectangular / Paralelepípedo",
+        nameEn = "Rectangular prism",
         vertices = 8,
         edges = 12,
         faces = 6,
@@ -59,15 +61,48 @@ sealed class GeometricShape(
         descriptionEn = "It has rectangular faces. Think of a cereal box or your favorite book!"
     )
 
+    object TriangularPrism : GeometricShape(
+        id = "triangular_prism",
+        nameEs = "Prisma triangular",
+        nameEn = "Triangular prism",
+        vertices = 6,
+        edges = 9,
+        faces = 5,
+        descriptionEs = "¡Tiene 2 bases triangulares iguales y 3 caras laterales rectangulares! Como una tienda de campaña.",
+        descriptionEn = "It has 2 identical triangular bases and 3 rectangular side faces! Just like a camping tent."
+    )
+
     object Pyramid : GeometricShape(
         id = "pyramid",
-        nameEs = "Pirámide",
-        nameEn = "Pyramid",
+        nameEs = "Pirámide de base cuadrada",
+        nameEn = "Square-based pyramid",
         vertices = 5,
         edges = 8,
         faces = 5,
         descriptionEs = "¡Tiene una base cuadrada abajo y sus lados terminan en una punta arriba (cúspide)!",
         descriptionEn = "It has a square base at the bottom, and all its sides meet at a point (apex) at the top!"
+    )
+
+    object TriangularPyramid : GeometricShape(
+        id = "triangular_pyramid",
+        nameEs = "Pirámide de base triangular",
+        nameEn = "Triangular pyramid",
+        vertices = 4,
+        edges = 6,
+        faces = 4,
+        descriptionEs = "¡Tiene una base triangular abajo y 3 caras triangulares laterales! También se llama tetraedro.",
+        descriptionEn = "It has a triangular base at the bottom and 3 triangular sides! It is also known as a tetrahedron."
+    )
+
+    object Cylinder : GeometricShape(
+        id = "cylinder",
+        nameEs = "Cilindro",
+        nameEn = "Cylinder",
+        vertices = 0,
+        edges = 2,
+        faces = 3,
+        descriptionEs = "¡Tiene 2 caras planas circulares (bases) y 1 superficie curva a su alrededor! Como una lata de refresco.",
+        descriptionEn = "It has 2 flat circular faces (bases) and 1 curved surface around it! Just like a soda can."
     )
 }
 
@@ -77,12 +112,20 @@ fun Explorer3DScreen(
     isSpanish: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val shapes = listOf(GeometricShape.Cube, GeometricShape.RectangularPrism, GeometricShape.Pyramid)
+    val shapes = listOf(
+        GeometricShape.Cube,
+        GeometricShape.RectangularPrism,
+        GeometricShape.TriangularPrism,
+        GeometricShape.Pyramid,
+        GeometricShape.TriangularPyramid,
+        GeometricShape.Cylinder
+    )
     var selectedShape by remember { mutableStateOf<GeometricShape>(GeometricShape.Cube) }
     
-    // Automatically report viewed shapes to the reward system
+    // Automatically report viewed shapes to the reward system & speak name in English
     LaunchedEffect(selectedShape) {
         com.example.ui.AchievementManager.exploreShape(selectedShape.id)
+        com.example.ui.TtsManager.speak(selectedShape.nameEn)
     }
     
     var showVertices by remember { mutableStateOf(true) }
@@ -164,27 +207,52 @@ fun Explorer3DScreen(
                     .testTag("shape_selector_dropdown"),
                 contentAlignment = Alignment.CenterStart
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column {
-                        Text(
-                            text = if (isSpanish) "Elige tu figura geométrica:" else "Choose your 3D Shape:",
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF2563EB)
+                    val scope = rememberCoroutineScope()
+                    var showTranslation by remember(selectedShape) { mutableStateOf(false) }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column {
+                            Text(
+                                text = if (isSpanish) "Elige tu figura geométrica:" else "Choose your 3D Shape:",
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF2563EB)
+                                )
                             )
-                        )
-                        Text(
-                            text = if (isSpanish) selectedShape.nameEs else selectedShape.nameEn,
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.ExtraBold,
-                                color = Color(0xFF1A1C1E)
-                            )
-                        )
-                    }
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                Text(
+                                    text = if (showTranslation) selectedShape.nameEs else selectedShape.nameEn,
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontWeight = FontWeight.ExtraBold,
+                                        color = Color(0xFF1A1C1E)
+                                    )
+                                )
+                                Button(
+                                    onClick = {
+                                        scope.launch {
+                                            showTranslation = true
+                                            kotlinx.coroutines.delay(2000)
+                                            showTranslation = false
+                                        }
+                                    },
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                                    contentPadding = PaddingValues(0.dp),
+                                    modifier = Modifier.size(24.dp)
+                                ) {
+                                    Text(
+                                        text = "🇲🇽",
+                                        fontSize = 16.sp
+                                    )
+                                }
+                            }
+                        }
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
                         contentDescription = "Select shape",

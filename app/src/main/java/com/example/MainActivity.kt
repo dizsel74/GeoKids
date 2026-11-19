@@ -41,6 +41,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         com.example.ui.AchievementManager.init(applicationContext)
+        com.example.ui.TtsManager.init(applicationContext)
         enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
@@ -48,13 +49,18 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        com.example.ui.TtsManager.shutdown()
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainAppLayout() {
     // Persistent global states across config changes
-    var isSpanish by rememberSaveable { mutableStateOf(true) }
+    var isSpanish by rememberSaveable { mutableStateOf(false) }
     var selectedTab by rememberSaveable { mutableStateOf("explorer") }
     var showAchievementsDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -94,36 +100,6 @@ fun MainAppLayout() {
                     }
                 },
                 actions = {
-                    // Fluent Kid-Friendly Language Toggle Button
-                    Button(
-                        onClick = { isSpanish = !isSpanish },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.White
-                        ),
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier
-                            .padding(end = 8.dp)
-                            .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(12.dp))
-                            .testTag("language_toggle"),
-                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Text(
-                                text = if (isSpanish) "🇲🇽" else "🇺🇸",
-                                fontSize = 16.sp
-                            )
-                            Text(
-                                text = if (isSpanish) "MX" else "US",
-                                fontWeight = FontWeight.Black,
-                                fontSize = 12.sp,
-                                color = Color(0xFF2563EB)
-                            )
-                        }
-                    }
-
                     // Achievements Trophy Button
                     IconButton(
                         onClick = { showAchievementsDialog = true },
@@ -414,7 +390,7 @@ fun AchievementsDialog(
                 AchievementCard(
                     emoji = "📚",
                     title = if (isSpanish) "Sabio de Tarjetas" else "Card Wise",
-                    req = if (isSpanish) "Voltea las 5 tarjetas en Tarjetas Pregunta." else "Flip all 5 flashcards to study.",
+                    req = if (isSpanish) "Voltea 12 tarjetas en Tarjetas Pregunta." else "Flip 12 flashcards to study.",
                     desc = if (isSpanish) "¡Leíste y aprendiste todas las preguntas secretas!" else "You read and learned all the secret questions!",
                     isUnlocked = flippedAll,
                     activeColor = Color(0xFFC0C0C0)
@@ -423,7 +399,7 @@ fun AchievementsDialog(
                 AchievementCard(
                     emoji = "🌟",
                     title = if (isSpanish) "Súper Estrella" else "Super Star",
-                    req = if (isSpanish) "Saca 4 de 5 o más en la Prueba Rápida." else "Score 4 out of 5 or more in the Exit Ticket.",
+                    req = if (isSpanish) "Saca 8 de 10 o más en la Prueba Rápida." else "Score 8 out of 10 or more in the Exit Ticket.",
                     desc = if (isSpanish) "¡Demostraste un gran conocimiento geométrico!" else "You demonstrated great geometric knowledge!",
                     isUnlocked = hasHighQuiz,
                     activeColor = Color(0xFFFFD700)
@@ -432,7 +408,7 @@ fun AchievementsDialog(
                 AchievementCard(
                     emoji = "👑",
                     title = if (isSpanish) "Mago Geométrico" else "Geometry Wizard",
-                    req = if (isSpanish) "Puntuación perfecta de 5 de 5 en la Prueba Rápida." else "Get a perfect score of 5 out of 5 in the Exit Ticket.",
+                    req = if (isSpanish) "Puntuación perfecta de 10 de 10 en la Prueba Rápida." else "Get a perfect score of 10 out of 10 in the Exit Ticket.",
                     desc = if (isSpanish) "¡Eres un experto total con visión espacial perfecta!" else "You are an expert with perfect spatial vision!",
                     isUnlocked = hasPerfectQuiz,
                     activeColor = Color(0xFFB9F2FF)

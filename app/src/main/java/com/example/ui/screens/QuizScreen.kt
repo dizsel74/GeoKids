@@ -82,8 +82,8 @@ fun QuizScreen(
                 optionsEs = listOf("Un cubo", "Una pirámide", "Un prisma rectangular"),
                 optionsEn = listOf("A cube", "A pyramid", "A rectangular prism"),
                 correctIndex = 1,
-                explanationEs = "¡Muy bien! Se forma una pirámide que termina en punta arriba.",
-                explanationEn = "Correct! It forms a pyramid that points up at the top."
+                explanationEs = "¡Muy bien! Se forma una pirámide de base cuadrada que termina en punta arriba.",
+                explanationEn = "Correct! It forms a square-based pyramid that points up at the top."
             ),
             QuizQuestion(
                 id = 5,
@@ -102,6 +102,56 @@ fun QuizScreen(
                 correctIndex = 2,
                 explanationEs = "¡Una arista es la línea de borde donde se conectan dos caras!",
                 explanationEn = "An edge is the border line where two faces connect!"
+            ),
+            QuizQuestion(
+                id = 6,
+                textEs = "¿Cuántas caras tiene un prisma triangular en total?",
+                textEn = "How many faces does a triangular prism have in total?",
+                optionsEs = listOf("3 caras", "5 caras", "6 caras"),
+                optionsEn = listOf("3 faces", "5 faces", "6 faces"),
+                correctIndex = 1,
+                explanationEs = "¡Tiene 5 caras en total (2 bases triangulares y 3 caras rectangulares a los lados)!",
+                explanationEn = "It has 5 faces in total (2 triangular bases and 3 rectangular side faces)!"
+            ),
+            QuizQuestion(
+                id = 7,
+                textEs = "¿Cuántos vértices tiene una pirámide de base triangular (tetraedro)?",
+                textEn = "How many vertices does a triangular pyramid (tetrahedron) have?",
+                optionsEs = listOf("4 vértices", "5 vértices", "6 vértices"),
+                optionsEn = listOf("4 vertices", "5 vertices", "6 vertices"),
+                correctIndex = 0,
+                explanationEs = "¡Tiene 4 vértices en total (3 en la base triangular y 1 arriba en la punta)!",
+                explanationEn = "It has 4 vertices in total (3 at the triangular base and 1 at the top apex)!"
+            ),
+            QuizQuestion(
+                id = 8,
+                textEs = "¿Cómo se le llama a un triángulo con exactamente dos lados iguales y uno diferente?",
+                textEn = "What is a triangle with exactly two equal sides and one different side called?",
+                optionsEs = listOf("Equilátero", "Isósceles", "Escaleno"),
+                optionsEn = listOf("Equilateral", "Isosceles", "Scalene"),
+                correctIndex = 1,
+                explanationEs = "¡Un triángulo con dos lados iguales es un triángulo isósceles!",
+                explanationEn = "A triangle with two equal sides is an isosceles triangle!"
+            ),
+            QuizQuestion(
+                id = 9,
+                textEs = "¿Cómo se le llama al polígono regular que tiene exactamente 5 lados iguales?",
+                textEn = "What is a regular polygon with exactly 5 equal sides called?",
+                optionsEs = listOf("Pentágono", "Hexágono", "Octágono"),
+                optionsEn = listOf("Pentagon", "Hexagon", "Octagon"),
+                correctIndex = 0,
+                explanationEs = "¡Un polígono de 5 lados se llama pentágono!",
+                explanationEn = "A 5-sided polygon is called a pentagon!"
+            ),
+            QuizQuestion(
+                id = 10,
+                textEs = "¿Cuál cuadrilátero tiene 4 lados iguales pero sus ángulos interiores no son rectos (diamante)?",
+                textEn = "Which quadrilateral has 4 equal sides but its interior angles are not right angles (diamond shape)?",
+                optionsEs = listOf("Rectángulo", "Rombo", "Trapecio"),
+                optionsEn = listOf("Rectangle", "Rhombus", "Trapezoid"),
+                correctIndex = 1,
+                explanationEs = "¡Es el rombo! Tiene todos sus lados de la misma medida, como un diamante.",
+                explanationEn = "It's the rhombus! It has equal sides, like a diamond."
             )
         )
     }
@@ -438,10 +488,10 @@ fun QuizScreen(
 
                     // Fun response message
                     Text(
-                        text = when (score) {
-                            5 -> if (isSpanish) "¡Eres un pro de la geometría! ¡Te sacaste un diez! 🥳" else "You are a geometry expert! Excellent! 🥳"
-                            4 -> if (isSpanish) "¡Casi perfecto! ¡Vas con todo, súper bien! 🌟" else "Almost perfect! Keep going, you're doing great! 🌟"
-                            3 -> if (isSpanish) "¡Súper bien hecho! ¡Aprendiste un montón hoy! 👍" else "Well done! You've learned a lot today! 👍"
+                        text = when {
+                            score == 10 -> if (isSpanish) "¡Eres un pro de la geometría! ¡Te sacaste un diez! 🥳" else "You are a geometry expert! Excellent! 🥳"
+                            score >= 8 -> if (isSpanish) "¡Casi perfecto! ¡Vas con todo, súper bien! 🌟" else "Almost perfect! Keep going, you're doing great! 🌟"
+                            score >= 6 -> if (isSpanish) "¡Súper bien hecho! ¡Aprendiste un montón hoy! 👍" else "Well done! You've learned a lot today! 👍"
                             else -> if (isSpanish) "¡Sigue practicando! ¡A la próxima te sale de diez! 💪" else "Keep practicing! With practice you will be the best! 💪"
                         },
                         style = MaterialTheme.typography.bodyLarge.copy(
@@ -488,7 +538,7 @@ fun QuizScreen(
                         )
 
                         // Badge 3: Super Star (on this quiz attempt)
-                        val isStar = score >= 4
+                        val isStar = score >= 8
                         ResultsBadgeItem(
                             emoji = "🌟",
                             title = if (isSpanish) "Estrella" else "Super Star",
@@ -497,7 +547,7 @@ fun QuizScreen(
                         )
 
                         // Badge 4: Perfect score
-                        val isPerfect = score == 5
+                        val isPerfect = score == 10
                         ResultsBadgeItem(
                             emoji = "👑",
                             title = if (isSpanish) "Mago" else "Wizard",

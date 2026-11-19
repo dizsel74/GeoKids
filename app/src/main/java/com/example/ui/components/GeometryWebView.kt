@@ -388,6 +388,123 @@ private fun getHtmlContent(): String {
                         edgesGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
                         var lineSegments = new THREE.LineSegments(edgesGeo, new THREE.LineBasicMaterial({ color: 0x1A35B3, linewidth: 3 }));
                         edgesGroup.add(lineSegments);
+
+                    } else if (currentShape === 'triangular_prism') {
+                        // Custom triangular prism in Three.js
+                        geometry = new THREE.BufferGeometry();
+                        var v = [
+                            0.0,  0.5, -0.6, // 0: Top back
+                           -0.6, -0.5, -0.6, // 1: Left back
+                            0.6, -0.5, -0.6, // 2: Right back
+                            0.0,  0.5,  0.6, // 3: Top front
+                           -0.6, -0.5,  0.6, // 4: Left front
+                            0.6, -0.5,  0.6  // 5: Right front
+                        ];
+
+                        vertexPositions = [
+                            new THREE.Vector3(v[0], v[1], v[2]),
+                            new THREE.Vector3(v[3], v[4], v[5]),
+                            new THREE.Vector3(v[6], v[7], v[8]),
+                            new THREE.Vector3(v[9], v[10], v[11]),
+                            new THREE.Vector3(v[12], v[13], v[14]),
+                            new THREE.Vector3(v[15], v[16], v[17])
+                        ];
+
+                        var vertices = new Float32Array([
+                            // Back triangle (0, 2, 1)
+                            v[0], v[1], v[2],  v[6], v[7], v[8],  v[3], v[4], v[5],
+                            // Front triangle (3, 4, 5)
+                            v[9], v[10], v[11], v[12], v[13], v[14], v[15], v[16], v[17],
+                            // Bottom face (1, 2, 5) and (1, 5, 4)
+                            v[3], v[4], v[5],  v[6], v[7], v[8],  v[15], v[16], v[17],
+                            v[3], v[4], v[5],  v[15], v[16], v[17], v[12], v[13], v[14],
+                            // Left face (0, 1, 4) and (0, 4, 3)
+                            v[0], v[1], v[2],  v[3], v[4], v[5],  v[12], v[13], v[14],
+                            v[0], v[1], v[2],  v[12], v[13], v[14], v[9], v[10], v[11],
+                            // Right face (0, 3, 5) and (0, 5, 2)
+                            v[0], v[1], v[2],  v[9], v[10], v[11], v[15], v[16], v[17],
+                            v[0], v[1], v[2],  v[15], v[16], v[17], v[6], v[7], v[8]
+                        ]);
+
+                        geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+                        geometry.computeVertexNormals();
+
+                        currentMesh = new THREE.Mesh(geometry, meshMaterial);
+                        scene.add(currentMesh);
+
+                        var edgesIndices = [
+                            0,1, 1,2, 2,0, // back base
+                            3,4, 4,5, 5,3, // front base
+                            0,3, 1,4, 2,5  // connectors
+                        ];
+                        var linePositions = [];
+                        for (var i = 0; i < edgesIndices.length; i++) {
+                            var idx = edgesIndices[i];
+                            linePositions.push(v[idx*3], v[idx*3+1], v[idx*3+2]);
+                        }
+                        var edgesGeo = new THREE.BufferGeometry();
+                        edgesGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+                        var lineSegments = new THREE.LineSegments(edgesGeo, new THREE.LineBasicMaterial({ color: 0x1A35B3, linewidth: 3 }));
+                        edgesGroup.add(lineSegments);
+
+                    } else if (currentShape === 'triangular_pyramid') {
+                        // Custom triangular pyramid in Three.js
+                        geometry = new THREE.BufferGeometry();
+                        var v = [
+                            0.0,  0.7,  0.0,  // 0: Apex
+                            0.0, -0.5, -0.7,  // 1: Back
+                           -0.6, -0.5,  0.35, // 2: Left
+                            0.6, -0.5,  0.35  // 3: Right
+                        ];
+
+                        vertexPositions = [
+                            new THREE.Vector3(v[0], v[1], v[2]),
+                            new THREE.Vector3(v[3], v[4], v[5]),
+                            new THREE.Vector3(v[6], v[7], v[8]),
+                            new THREE.Vector3(v[9], v[10], v[11])
+                        ];
+
+                        var vertices = new Float32Array([
+                            // Bottom face (1, 3, 2)
+                            v[3], v[4], v[5],   v[9], v[10], v[11], v[6], v[7], v[8],
+                            // Left face (0, 2, 1)
+                            v[0], v[1], v[2],   v[6], v[7], v[8],   v[3], v[4], v[5],
+                            // Right face (0, 3, 2)
+                            v[0], v[1], v[2],   v[9], v[10], v[11], v[6], v[7], v[8],
+                            // Back face (0, 1, 3)
+                            v[0], v[1], v[2],   v[3], v[4], v[5],   v[9], v[10], v[11]
+                        ]);
+
+                        geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+                        geometry.computeVertexNormals();
+
+                        currentMesh = new THREE.Mesh(geometry, meshMaterial);
+                        scene.add(currentMesh);
+
+                        var edgesIndices = [
+                            1,2, 2,3, 3,1, // Base
+                            0,1, 0,2, 0,3  // Apex sides
+                        ];
+                        var linePositions = [];
+                        for (var i = 0; i < edgesIndices.length; i++) {
+                            var idx = edgesIndices[i];
+                            linePositions.push(v[idx*3], v[idx*3+1], v[idx*3+2]);
+                        }
+                        var edgesGeo = new THREE.BufferGeometry();
+                        edgesGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+                        var lineSegments = new THREE.LineSegments(edgesGeo, new THREE.LineBasicMaterial({ color: 0x1A35B3, linewidth: 3 }));
+                        edgesGroup.add(lineSegments);
+                    } else if (currentShape === 'cylinder') {
+                        geometry = new THREE.CylinderGeometry(0.5, 0.5, 1.2, 24, 1, false);
+                        currentMesh = new THREE.Mesh(geometry, meshMaterial);
+                        scene.add(currentMesh);
+
+                        // Cylinder has no traditional corners/vertices
+                        vertexPositions = [];
+
+                        var edgesGeo = new THREE.EdgesGeometry(geometry);
+                        var lineSegments = new THREE.LineSegments(edgesGeo, new THREE.LineBasicMaterial({ color: 0x1A35B3, linewidth: 3 }));
+                        edgesGroup.add(lineSegments);
                     }
 
                     // Add sphere helpers for Vertices
@@ -496,6 +613,92 @@ private fun getHtmlContent(): String {
                                 {indices: [1, 2, 4], normal: {x: 0.86, y: 0.5, z: 0}}, // right side
                                 {indices: [2, 3, 4], normal: {x: 0, y: 0.5, z: 0.86}}, // front side
                                 {indices: [3, 0, 4], normal: {x: -0.86, y: 0.5, z: 0}}  // left side
+                            ]
+                        },
+                        triangular_prism: {
+                            vertices: [
+                                {x:  0.0, y:  0.5, z: -0.6}, // 0
+                                {x: -0.6, y: -0.5, z: -0.6}, // 1
+                                {x:  0.6, y: -0.5, z: -0.6}, // 2
+                                {x:  0.0, y:  0.5, z:  0.6}, // 3
+                                {x: -0.6, y: -0.5, z:  0.6}, // 4
+                                {x:  0.6, y: -0.5, z:  0.6}  // 5
+                            ],
+                            edges: [
+                                [0,1], [1,2], [2,0], // back base
+                                [3,4], [4,5], [5,3], // front base
+                                [0,3], [1,4], [2,5]  // connectors
+                            ],
+                            faces: [
+                                {indices: [0, 2, 1], normal: {x: 0, y: 0, z: -1}}, // back
+                                {indices: [3, 4, 5], normal: {x: 0, y: 0, z: 1}},  // front
+                                {indices: [1, 2, 5, 4], normal: {x: 0, y: -1, z: 0}}, // bottom
+                                {indices: [0, 1, 4, 3], normal: {x: -0.86, y: 0.5, z: 0}}, // left slanted
+                                {indices: [0, 3, 5, 2], normal: {x: 0.86, y: 0.5, z: 0}}   // right slanted
+                            ]
+                        },
+                        triangular_pyramid: {
+                            vertices: [
+                                {x:  0.0, y:  0.7, z:  0.0},  // 0 apex
+                                {x:  0.0, y: -0.5, z: -0.7},  // 1 back
+                                {x: -0.6, y: -0.5, z:  0.35}, // 2 left
+                                {x:  0.6, y: -0.5, z:  0.35}  // 3 right
+                            ],
+                            edges: [
+                                [1,2], [2,3], [3,1], // base
+                                [0,1], [0,2], [0,3]  // apex sides
+                            ],
+                            faces: [
+                                {indices: [1, 3, 2], normal: {x: 0, y: -1, z: 0}}, // base
+                                {indices: [0, 2, 1], normal: {x: -0.7, y: 0.4, z: -0.6}}, // left-back
+                                {indices: [0, 3, 2], normal: {x: 0, y: 0.4, z: 0.9}}, // front
+                                {indices: [0, 1, 3], normal: {x: 0.7, y: 0.4, z: -0.6}} // right-back
+                            ]
+                        },
+                        cylinder: {
+                            vertices: [
+                                // Bottom circular rim (indices 0 to 7)
+                                {x: 0.5 * Math.cos(0), y: -0.6, z: 0.5 * Math.sin(0)},
+                                {x: 0.5 * Math.cos(Math.PI/4), y: -0.6, z: 0.5 * Math.sin(Math.PI/4)},
+                                {x: 0.5 * Math.cos(Math.PI/2), y: -0.6, z: 0.5 * Math.sin(Math.PI/2)},
+                                {x: 0.5 * Math.cos(3*Math.PI/4), y: -0.6, z: 0.5 * Math.sin(3*Math.PI/4)},
+                                {x: 0.5 * Math.cos(Math.PI), y: -0.6, z: 0.5 * Math.sin(Math.PI)},
+                                {x: 0.5 * Math.cos(5*Math.PI/4), y: -0.6, z: 0.5 * Math.sin(5*Math.PI/4)},
+                                {x: 0.5 * Math.cos(3*Math.PI/2), y: -0.6, z: 0.5 * Math.sin(3*Math.PI/2)},
+                                {x: 0.5 * Math.cos(7*Math.PI/4), y: -0.6, z: 0.5 * Math.sin(7*Math.PI/4)},
+
+                                // Top circular rim (indices 8 to 15)
+                                {x: 0.5 * Math.cos(0), y: 0.6, z: 0.5 * Math.sin(0)},
+                                {x: 0.5 * Math.cos(Math.PI/4), y: 0.6, z: 0.5 * Math.sin(Math.PI/4)},
+                                {x: 0.5 * Math.cos(Math.PI/2), y: 0.6, z: 0.5 * Math.sin(Math.PI/2)},
+                                {x: 0.5 * Math.cos(3*Math.PI/4), y: 0.6, z: 0.5 * Math.sin(3*Math.PI/4)},
+                                {x: 0.5 * Math.cos(Math.PI), y: 0.6, z: 0.5 * Math.sin(Math.PI)},
+                                {x: 0.5 * Math.cos(5*Math.PI/4), y: 0.6, z: 0.5 * Math.sin(5*Math.PI/4)},
+                                {x: 0.5 * Math.cos(3*Math.PI/2), y: 0.6, z: 0.5 * Math.sin(3*Math.PI/2)},
+                                {x: 0.5 * Math.cos(7*Math.PI/4), y: 0.6, z: 0.5 * Math.sin(7*Math.PI/4)}
+                            ],
+                            edges: [
+                                // Bottom ring
+                                [0,1], [1,2], [2,3], [3,4], [4,5], [5,6], [6,7], [7,0],
+                                // Top ring
+                                [8,9], [9,10], [10,11], [11,12], [12,13], [13,14], [14,15], [15,8],
+                                // Vertical connectors
+                                [0,8], [1,9], [2,10], [3,11], [4,12], [5,13], [6,14], [7,15]
+                            ],
+                            faces: [
+                                // Bottom cap (8-sided polygon)
+                                {indices: [7, 6, 5, 4, 3, 2, 1, 0], normal: {x: 0, y: -1, z: 0}},
+                                // Top cap (8-sided polygon)
+                                {indices: [8, 9, 10, 11, 12, 13, 14, 15], normal: {x: 0, y: 1, z: 0}},
+                                // Lateral rect faces
+                                {indices: [0, 1, 9, 8], normal: {x: Math.cos(Math.PI/8), y: 0, z: Math.sin(Math.PI/8)}},
+                                {indices: [1, 2, 10, 9], normal: {x: Math.cos(3*Math.PI/8), y: 0, z: Math.sin(3*Math.PI/8)}},
+                                {indices: [2, 3, 11, 10], normal: {x: Math.cos(5*Math.PI/8), y: 0, z: Math.sin(5*Math.PI/8)}},
+                                {indices: [3, 4, 12, 11], normal: {x: Math.cos(7*Math.PI/8), y: 0, z: Math.sin(7*Math.PI/8)}},
+                                {indices: [4, 5, 13, 12], normal: {x: Math.cos(9*Math.PI/8), y: 0, z: Math.sin(9*Math.PI/8)}},
+                                {indices: [5, 6, 14, 13], normal: {x: Math.cos(11*Math.PI/8), y: 0, z: Math.sin(11*Math.PI/8)}},
+                                {indices: [6, 7, 15, 14], normal: {x: Math.cos(13*Math.PI/8), y: 0, z: Math.sin(13*Math.PI/8)}},
+                                {indices: [7, 0, 8, 15], normal: {x: Math.cos(15*Math.PI/8), y: 0, z: Math.sin(15*Math.PI/8)}}
                             ]
                         }
                     };
@@ -640,7 +843,7 @@ private fun getHtmlContent(): String {
                         }
 
                         // Draw Vertices (Highlight corners with bright orange/red spheres)
-                        if (config.showVertices) {
+                        if (config.showVertices && currentShape !== 'cylinder') {
                             // Depth-sort vertices so back vertices look smaller or are drawn behind
                             var sortedVertices = transformedVertices.slice();
                             sortedVertices.sort(function(a, b) {

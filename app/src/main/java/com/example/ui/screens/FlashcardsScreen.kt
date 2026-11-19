@@ -4,6 +4,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -52,7 +54,7 @@ fun FlashcardsScreen(
                 id = 2,
                 questionEs = "Figura 3D con 8 vértices (esquinas) y 6 caras rectangulares.\n\n📦 ¡Es como una caja de zapatos!",
                 questionEn = "3D shape with 8 vertices (corners) and 6 rectangular faces.\n\n📦 It's like a shoebox!",
-                answerEs = "📦\n\nEl Prisma Rectangular",
+                answerEs = "📦\n\nEl Prisma Rectangular / Paralelepípedo",
                 answerEn = "📦\n\nThe Rectangular Prism",
                 color = Color(0xFF2563EB) // Bright Blue
             ),
@@ -60,8 +62,8 @@ fun FlashcardsScreen(
                 id = 3,
                 questionEs = "Tiene una base cuadrada plana abajo y sus lados terminan en una sola punta arriba.",
                 questionEn = "It has a flat square base at the bottom, and all its sides meet at a single point at the top.",
-                answerEs = "🔺\n\nLa Pirámide",
-                answerEn = "🔺\n\nThe Pyramid",
+                answerEs = "🔺\n\nLa Pirámide de base cuadrada",
+                answerEn = "🔺\n\nThe Square-based pyramid",
                 color = Color(0xFF10B981) // Green
             ),
             Flashcard(
@@ -76,9 +78,73 @@ fun FlashcardsScreen(
                 id = 5,
                 questionEs = "¿Cómo se llaman las líneas formadas cuando dos caras de un cuerpo 3D se juntan?",
                 questionEn = "What do we call the lines formed when two faces of a 3D solid meet?",
-                answerEs = "📏\n\nLas Aristas (o líneas de borde)",
-                answerEn = "📏\n\nThe Edges (or border lines)",
+                answerEs = "📏\n\nLas Aristas",
+                answerEn = "📏\n\nThe Edges",
                 color = Color(0xFF8B5CF6) // Purple
+            ),
+            Flashcard(
+                id = 6,
+                questionEs = "Polígono de 3 lados que tiene todos sus lados y ángulos iguales.",
+                questionEn = "A 3-sided polygon that has all of its sides and angles equal.",
+                answerEs = "🔺\n\nEl Triángulo Equilátero",
+                answerEn = "🔺\n\nThe Equilateral Triangle",
+                color = Color(0xFFEC4899) // Pink
+            ),
+            Flashcard(
+                id = 7,
+                questionEs = "Triángulo que tiene exactamente dos lados iguales y uno diferente.",
+                questionEn = "A triangle that has exactly two equal sides and one different side.",
+                answerEs = "📐\n\nEl Triángulo Isósceles",
+                answerEn = "📐\n\nThe Isosceles Triangle",
+                color = Color(0xFF06B6D4) // Cyan
+            ),
+            Flashcard(
+                id = 8,
+                questionEs = "Triángulo con tres lados de diferentes medidas.",
+                questionEn = "A triangle with three sides of completely different lengths.",
+                answerEs = "📐\n\nEl Triángulo Escaleno",
+                answerEn = "📐\n\nThe Scalene Triangle",
+                color = Color(0xFF14B8A6) // Teal
+            ),
+            Flashcard(
+                id = 9,
+                questionEs = "Cuadrilátero con 4 lados iguales, pero sus ángulos no son rectos.\n\n💎 ¡Parece un diamante!",
+                questionEn = "A quadrilateral with 4 equal sides, but its angles are not right angles.\n\n💎 It looks like a diamond!",
+                answerEs = "💎\n\nEl Rombo",
+                answerEn = "💎\n\nThe Rhombus",
+                color = Color(0xFFF43F5E) // Rose
+            ),
+            Flashcard(
+                id = 10,
+                questionEs = "Cuadrilátero con un solo par de lados paralelos.",
+                questionEn = "A quadrilateral with exactly one pair of parallel sides.",
+                answerEs = "🪵\n\nEl Trapecio",
+                answerEn = "🪵\n\nThe Trapezoid",
+                color = Color(0xFF84CC16) // Lime
+            ),
+            Flashcard(
+                id = 11,
+                questionEs = "Polígono regular con exactamente 5 lados y 5 ángulos iguales.",
+                questionEn = "A regular polygon with exactly 5 equal sides and 5 equal angles.",
+                answerEs = "🛑\n\nEl Pentágono",
+                answerEn = "🛑\n\nThe Pentagon",
+                color = Color(0xFF6366F1) // Indigo
+            ),
+            Flashcard(
+                id = 12,
+                questionEs = "Cuerpo 3D con 2 bases triangulares iguales y 3 caras laterales rectangulares.\n\n⛺ ¡Como una tienda de campaña!",
+                questionEn = "A 3D solid with 2 identical triangular bases and 3 rectangular side faces.\n\n⛺ Just like a camping tent!",
+                answerEs = "⛺\n\nEl Prisma Triangular",
+                answerEn = "⛺\n\nThe Triangular Prism",
+                color = Color(0xFF10B981) // Green
+            ),
+            Flashcard(
+                id = 13,
+                questionEs = "Cuerpo 3D con 4 caras triangulares en total, 4 vértices y 6 aristas.\n\n📐 ¡También se le llama tetraedro!",
+                questionEn = "A 3D solid with 4 triangular faces in total, 4 vertices, and 6 edges.\n\n📐 Also known as a tetrahedron!",
+                answerEs = "📐\n\nLa Pirámide de base triangular",
+                answerEn = "📐\n\nThe Triangular Pyramid",
+                color = Color(0xFFEF4444) // Bright Red
             )
         )
     }
@@ -141,6 +207,8 @@ fun FlashcardsScreen(
                 .padding(horizontal = 16.dp, vertical = 6.dp)
         )
 
+        val scope = rememberCoroutineScope()
+
         // The Flippable Card Container
         FlippableCard(
             isFlipped = isFlipped,
@@ -148,6 +216,9 @@ fun FlashcardsScreen(
                 isFlipped = !isFlipped
                 if (isFlipped) {
                     com.example.ui.AchievementManager.flipCard(card.id)
+                    // Speak the answer in US English!
+                    val cleanText = card.answerEn.replace(Regex("[^a-zA-Z0-9\\s()\\-]"), "").replace("\n", " ").trim()
+                    com.example.ui.TtsManager.speak(cleanText)
                 }
             },
             frontContent = {
@@ -160,13 +231,35 @@ fun FlashcardsScreen(
                 )
             },
             backContent = {
-                CardSideContent(
-                    title = if (isSpanish) "¡RESPUESTA / ANSWER!" else "ANSWER",
-                    text = if (isSpanish) card.answerEs else card.answerEn,
-                    cardColor = card.color,
-                    isSpanish = isSpanish,
-                    isBack = true
-                )
+                var showTranslation by remember(card) { mutableStateOf(false) }
+                Box(modifier = Modifier.fillMaxSize()) {
+                    CardSideContent(
+                        title = "ANSWER",
+                        text = if (showTranslation) card.answerEs else card.answerEn,
+                        cardColor = card.color,
+                        isSpanish = false,
+                        isBack = true
+                    )
+                    
+                    // Small translation button with Mexican Flag
+                    Button(
+                        onClick = {
+                            scope.launch {
+                                showTranslation = true
+                                kotlinx.coroutines.delay(2000)
+                                showTranslation = false
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                        contentPadding = PaddingValues(0.dp),
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(top = 16.dp, end = 16.dp)
+                            .size(36.dp)
+                    ) {
+                        Text("🇲🇽", fontSize = 20.sp)
+                    }
+                }
             },
             modifier = Modifier
                 .weight(1f)
