@@ -1,25 +1,27 @@
-# GeoKids 🔺🟦⚪
+# GeoKids 3D 📐
 
-A small Android game that helps kids ages 8–9 learn geometric shapes by playing.
+An Android app that helps kids ages 8–9 learn 3D geometry by touching and spinning shapes with their finger.
 
-I built it for my daughter. She was learning shapes at school, and I wanted something she'd actually choose to play at home. Watching her use it changed a lot of the design: less text, bigger feedback, and shorter rounds so she doesn't lose interest.
-
-## Screenshots
-
-| Home | Game | Feedback |
-|------|------|----------|
-| ![Home](screenshots/home.png) | ![Game](screenshots/game.png) | ![Feedback](screenshots/feedback.png) |
+I built it for my daughter. She was learning solids at school, and flat drawings in a notebook weren't clicking. Being able to rotate a prism and count its corners herself made the difference.
 
 ## What kids do
 
-- Identify shapes like triangles, squares, circles and rectangles
-- Get instant visual feedback on every answer
-- Play short rounds designed for a kid's attention span
+- **3D Explorer:** spin shapes like prisms, cubes and pyramids, and turn on vertices, edges and faces to see and count them
+- **Flat to Solid:** connect 2D figures with the 3D shapes they form
+- **Flashcards:** quick review of names and properties
+- **Exit Ticket:** a short check at the end, like the ones teachers use in class
+- Bilingual (English / Spanish) and progress rewards
 
 ## Built with
 
-- Kotlin (native Android)
+- Kotlin (native Android) with a WebGL view (Three.js) for the 3D shapes
 - Google AI Studio and the Gemini API
+
+## Screenshots
+
+| Full shape | Vertices | Edges | Faces |
+|---|---|---|---|
+| ![Full](screenshots/explorer.png) | ![Vertices](screenshots/vertices.png) | ![Edges](screenshots/edges.png) | ![Faces](screenshots/faces.png) |
 
 ## What I learned
 
