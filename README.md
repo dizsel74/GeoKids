@@ -1,21 +1,40 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# GeoKids 🔺🟦⚪
 
-# Run and deploy your AI Studio app
+A small Android game that helps kids ages 8–9 learn geometric shapes by playing.
 
-This contains everything you need to run your app locally.
+I built it for my daughter. She was learning shapes at school, and I wanted something she'd actually choose to play at home. Watching her use it changed a lot of the design: less text, bigger feedback, and shorter rounds so she doesn't lose interest.
 
-View your app in AI Studio: https://ai.studio/apps/0717f019-7ec7-4524-898a-f0c45417f8cf
+## Screenshots
 
-## Run Locally
+| Home | Game | Feedback |
+|------|------|----------|
+| ![Home](screenshots/home.png) | ![Game](screenshots/game.png) | ![Feedback](screenshots/feedback.png) |
 
-**Prerequisites:**  [Android Studio](https://developer.android.com/studio)
+## What kids do
 
+- Identify shapes like triangles, squares, circles and rectangles
+- Get instant visual feedback on every answer
+- Play short rounds designed for a kid's attention span
 
-1. Open Android Studio
-2. Select **Open** and choose the directory containing this project
-3. Allow Android Studio to fix any incompatibilities as it imports the project.
-4. Create a file named `.env` in the project directory and set `GEMINI_API_KEY` in that file to your Gemini API key (see `.env.example` for an example)
-5. Remove this line from the app's `build.gradle.kts` file: `signingConfig = signingConfigs.getByName("debugConfig")`
-6. Run the app on an emulator or physical device
+## Built with
+
+- Kotlin (native Android)
+- Google AI Studio and the Gemini API
+
+## What I learned
+
+Kids don't read instructions, they tap everything. Every screen had to explain itself through visuals, and every action needed a clear, immediate response.
+
+## Run locally
+
+**Prerequisites:** [Android Studio](https://developer.android.com/studio)
+
+1. Open Android Studio and select **Open**, then choose this project's folder
+2. Let Android Studio fix any incompatibilities during import
+3. Create a `.env` file in the project folder and set `GEMINI_API_KEY` to your Gemini API key (see `.env.example`)
+4. Remove this line from `build.gradle.kts`: `signingConfig = signingConfigs.getByName("debugConfig")`
+5. Run the app on an emulator or a physical device
+
+---
+
+Made by [Arturo Mendoza](https://iamuxui.dev), UX/UI designer.
