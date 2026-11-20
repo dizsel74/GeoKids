@@ -9,15 +9,25 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Assignment
+import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Explore
-import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.Hexagon
+import androidx.compose.material.icons.filled.LocalActivity
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Style
-import androidx.compose.material.icons.outlined.Assignment
-import androidx.compose.material.icons.outlined.Explore
-import androidx.compose.material.icons.outlined.MenuBook
-import androidx.compose.material.icons.outlined.Style
+import androidx.compose.material.icons.filled.WorkspacePremium
+import androidx.compose.material.icons.filled._3dRotation
+import androidx.compose.material.icons.outlined.EmojiEvents
+import androidx.compose.material.icons.outlined.HelpOutline
+import androidx.compose.material.icons.outlined.Hexagon
+import androidx.compose.material.icons.outlined.LocalActivity
+import androidx.compose.material.icons.outlined._3dRotation
 import androidx.compose.material3.*
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import com.example.R
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -63,6 +73,7 @@ fun MainAppLayout() {
     var isSpanish by rememberSaveable { mutableStateOf(false) }
     var selectedTab by rememberSaveable { mutableStateOf("explorer") }
     var showAchievementsDialog by rememberSaveable { mutableStateOf(false) }
+    var showExplorerHelpDialog by rememberSaveable { mutableStateOf(false) }
 
     if (showAchievementsDialog) {
         AchievementsDialog(
@@ -73,61 +84,69 @@ fun MainAppLayout() {
 
     Scaffold(
         topBar = {
+            val topBarTitle = when (selectedTab) {
+                "explorer" -> if (isSpanish) "Figuras 3D" else "3D Shapes"
+                "dictionary" -> if (isSpanish) "De 2D a 3D" else "Flat to Solid"
+                "flashcards" -> if (isSpanish) "Tarjetas" else "Flashcards"
+                "quiz" -> if (isSpanish) "Prueba Rápida" else "Exit Ticket"
+                else -> "GeoKids"
+            }
+            val topBarSubtitle = when (selectedTab) {
+                "explorer" -> if (isSpanish) "¡Toca y gira las figuras con tu dedo!" else "Touch and spin the shapes with your finger!"
+                else -> null
+            }
+
             TopAppBar(
                 title = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
+                    Column {
                         Text(
-                            text = "📐",
-                            fontSize = 24.sp
+                            text = topBarTitle,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 20.sp,
+                            color = Color(0xFF1A1C1E)
                         )
-                        Column {
+                        if (topBarSubtitle != null) {
                             Text(
-                                text = "GeoKids 3D",
-                                fontWeight = FontWeight.Black,
-                                fontSize = 20.sp,
-                                color = Color(0xFF1A1C1E)
-                            )
-                            Text(
-                                text = if (isSpanish) "¡Aprende Geometría!" else "Learn Geometry!",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 11.sp,
+                                text = topBarSubtitle,
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 12.sp,
+                                lineHeight = 15.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
                                 color = Color(0xFF74777F)
                             )
                         }
                     }
                 },
                 actions = {
+                    if (selectedTab == "explorer") {
+                        IconButton(
+                            onClick = { showExplorerHelpDialog = true },
+                            modifier = Modifier
+                                .size(40.dp)
+                                .testTag("help_button")
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.HelpOutline,
+                                contentDescription = if (isSpanish) "Ayuda" else "Help",
+                                tint = Color(0xFF1A1C1E),
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
                     // Achievements Trophy Button
                     IconButton(
                         onClick = { showAchievementsDialog = true },
                         modifier = Modifier
-                            .padding(end = 4.dp)
-                            .size(36.dp)
+                            .padding(end = 8.dp)
+                            .size(40.dp)
                             .testTag("achievements_button")
                     ) {
-                        Text(
-                            text = "🏆",
-                            fontSize = 22.sp
-                        )
-                    }
-
-                    // Kid-friendly age badge "8y" matching Design HTML
-                    Box(
-                        modifier = Modifier
-                            .padding(end = 12.dp)
-                            .size(36.dp)
-                            .background(Color(0xFFDBEAFE), RoundedCornerShape(18.dp))
-                            .border(2.dp, Color(0xFF2563EB), RoundedCornerShape(18.dp)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "8y",
-                            fontWeight = FontWeight.Black,
-                            fontSize = 13.sp,
-                            color = Color(0xFF2563EB)
+                        Icon(
+                            imageVector = Icons.Outlined.EmojiEvents,
+                            contentDescription = if (isSpanish) "Mis Logros" else "Achievements",
+                            tint = Color(0xFF1A1C1E),
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 },
@@ -145,20 +164,20 @@ fun MainAppLayout() {
                     .border(width = 1.dp, color = Color(0xFFE2E8F0))
                     .testTag("bottom_nav_bar")
             ) {
-                // Tab 1: 3D Explorer
+                // Tab 1: 3D Shapes
                 NavigationBarItem(
                     selected = selectedTab == "explorer",
                     onClick = { selectedTab = "explorer" },
                     icon = {
                         Icon(
-                            imageVector = if (selectedTab == "explorer") Icons.Filled.Explore else Icons.Outlined.Explore,
-                            contentDescription = "Explorer"
+                            imageVector = if (selectedTab == "explorer") Icons.Filled._3dRotation else Icons.Outlined._3dRotation,
+                            contentDescription = "3D Shapes"
                         )
                     },
                     label = {
                         Text(
-                            text = if (isSpanish) "Explorador" else "Explorer",
-                            fontWeight = FontWeight.Bold,
+                            text = if (isSpanish) "Figuras 3D" else "3D Shapes",
+                            fontWeight = FontWeight.Medium,
                             fontSize = 11.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -174,20 +193,20 @@ fun MainAppLayout() {
                     modifier = Modifier.testTag("tab_explorer")
                 )
 
-                // Tab 2: Dictionary
+                // Tab 2: Flat to Solid
                 NavigationBarItem(
                     selected = selectedTab == "dictionary",
                     onClick = { selectedTab = "dictionary" },
                     icon = {
                         Icon(
-                            imageVector = if (selectedTab == "dictionary") Icons.Filled.MenuBook else Icons.Outlined.MenuBook,
-                            contentDescription = "Dictionary"
+                            imageVector = if (selectedTab == "dictionary") Icons.Filled.Hexagon else Icons.Outlined.Hexagon,
+                            contentDescription = "Flat to Solid"
                         )
                     },
                     label = {
                         Text(
                             text = if (isSpanish) "De 2D a 3D" else "Flat to Solid",
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.Medium,
                             fontSize = 11.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -209,14 +228,20 @@ fun MainAppLayout() {
                     onClick = { selectedTab = "flashcards" },
                     icon = {
                         Icon(
-                            imageVector = if (selectedTab == "flashcards") Icons.Filled.Style else Icons.Outlined.Style,
+                            painter = painterResource(
+                                id = if (selectedTab == "flashcards") {
+                                    R.drawable.ic_cards_stack_filled
+                                } else {
+                                    R.drawable.ic_cards_stack_outlined
+                                }
+                            ),
                             contentDescription = "Flashcards"
                         )
                     },
                     label = {
                         Text(
                             text = if (isSpanish) "Tarjetas" else "Flashcards",
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.Medium,
                             fontSize = 11.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -232,20 +257,20 @@ fun MainAppLayout() {
                     modifier = Modifier.testTag("tab_flashcards")
                 )
 
-                // Tab 4: Quiz
+                // Tab 4: Exit Ticket
                 NavigationBarItem(
                     selected = selectedTab == "quiz",
                     onClick = { selectedTab = "quiz" },
                     icon = {
                         Icon(
-                            imageVector = if (selectedTab == "quiz") Icons.Filled.Assignment else Icons.Outlined.Assignment,
-                            contentDescription = "Quiz"
+                            imageVector = if (selectedTab == "quiz") Icons.Filled.LocalActivity else Icons.Outlined.LocalActivity,
+                            contentDescription = "Exit Ticket"
                         )
                     },
                     label = {
                         Text(
                             text = if (isSpanish) "Prueba" else "Exit Ticket",
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.Medium,
                             fontSize = 11.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -270,7 +295,11 @@ fun MainAppLayout() {
             color = Color(0xFFF7F9FC)
         ) {
             when (selectedTab) {
-                "explorer" -> Explorer3DScreen(isSpanish = isSpanish)
+                "explorer" -> Explorer3DScreen(
+                    isSpanish = isSpanish,
+                    showHelpDialog = showExplorerHelpDialog,
+                    onDismissHelpDialog = { showExplorerHelpDialog = false }
+                )
                 "dictionary" -> DictionaryScreen(isSpanish = isSpanish)
                 "flashcards" -> FlashcardsScreen(isSpanish = isSpanish)
                 "quiz" -> QuizScreen(isSpanish = isSpanish)
@@ -292,9 +321,9 @@ fun AchievementsDialog(
                 modifier = Modifier.testTag("dismiss_achievements_button")
             ) {
                 Text(
-                    text = if (isSpanish) "¡Excelente! 🚀" else "Awesome! 🚀",
-                    fontWeight = FontWeight.Black,
-                    fontSize = 16.sp,
+                    text = if (isSpanish) "¡Excelente!" else "Awesome!",
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 15.sp,
                     color = Color(0xFF2563EB)
                 )
             }
@@ -306,9 +335,16 @@ fun AchievementsDialog(
                 },
                 modifier = Modifier.testTag("reset_achievements_button")
             ) {
+                Icon(
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = null,
+                    tint = Color(0xFFEF4444),
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = if (isSpanish) "Reiniciar 🔄" else "Reset 🔄",
-                    fontWeight = FontWeight.Bold,
+                    text = if (isSpanish) "Reiniciar" else "Reset",
+                    fontWeight = FontWeight.Medium,
                     fontSize = 14.sp,
                     color = Color(0xFFEF4444)
                 )
@@ -320,11 +356,16 @@ fun AchievementsDialog(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("🏆", fontSize = 28.sp)
+                Icon(
+                    imageVector = Icons.Outlined.EmojiEvents,
+                    contentDescription = null,
+                    tint = Color(0xFF1A1C1E),
+                    modifier = Modifier.size(26.dp)
+                )
                 Text(
                     text = if (isSpanish) "Mis Logros" else "My Achievements",
                     style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Black,
+                        fontWeight = FontWeight.SemiBold,
                         fontSize = 22.sp
                     ),
                     color = Color(0xFF1A1C1E)
@@ -361,7 +402,7 @@ fun AchievementsDialog(
                     ) {
                         Text(
                             text = if (isSpanish) "¡Llevas $unlockedCount de 4 insignias!" else "You have $unlockedCount of 4 badges!",
-                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Black),
+                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                             color = Color(0xFF2563EB)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
@@ -379,7 +420,7 @@ fun AchievementsDialog(
                 }
 
                 AchievementCard(
-                    emoji = "🧭",
+                    icon = Icons.Default.Explore,
                     title = if (isSpanish) "Mente Curiosa" else "Curious Mind",
                     req = if (isSpanish) "Explora todas las figuras en el Explorador 3D." else "Explore all shapes in the 3D Explorer.",
                     desc = if (isSpanish) "¡Has observado de cerca todas las caras y vértices!" else "You have closely inspected all shapes!",
@@ -388,30 +429,30 @@ fun AchievementsDialog(
                 )
 
                 AchievementCard(
-                    emoji = "📚",
+                    icon = Icons.Default.Style,
                     title = if (isSpanish) "Sabio de Tarjetas" else "Card Wise",
                     req = if (isSpanish) "Voltea 12 tarjetas en Tarjetas Pregunta." else "Flip 12 flashcards to study.",
                     desc = if (isSpanish) "¡Leíste y aprendiste todas las preguntas secretas!" else "You read and learned all the secret questions!",
                     isUnlocked = flippedAll,
-                    activeColor = Color(0xFFC0C0C0)
+                    activeColor = Color(0xFF64748B)
                 )
 
                 AchievementCard(
-                    emoji = "🌟",
+                    icon = Icons.Default.Star,
                     title = if (isSpanish) "Súper Estrella" else "Super Star",
                     req = if (isSpanish) "Saca 8 de 10 o más en la Prueba Rápida." else "Score 8 out of 10 or more in the Exit Ticket.",
                     desc = if (isSpanish) "¡Demostraste un gran conocimiento geométrico!" else "You demonstrated great geometric knowledge!",
                     isUnlocked = hasHighQuiz,
-                    activeColor = Color(0xFFFFD700)
+                    activeColor = Color(0xFFF59E0B)
                 )
 
                 AchievementCard(
-                    emoji = "👑",
+                    icon = Icons.Default.WorkspacePremium,
                     title = if (isSpanish) "Mago Geométrico" else "Geometry Wizard",
                     req = if (isSpanish) "Puntuación perfecta de 10 de 10 en la Prueba Rápida." else "Get a perfect score of 10 out of 10 in the Exit Ticket.",
                     desc = if (isSpanish) "¡Eres un experto total con visión espacial perfecta!" else "You are an expert with perfect spatial vision!",
                     isUnlocked = hasPerfectQuiz,
-                    activeColor = Color(0xFFB9F2FF)
+                    activeColor = Color(0xFF0EA5E9)
                 )
             }
         },
@@ -422,7 +463,7 @@ fun AchievementsDialog(
 
 @Composable
 fun AchievementCard(
-    emoji: String,
+    icon: ImageVector,
     title: String,
     req: String,
     desc: String,
@@ -449,7 +490,7 @@ fun AchievementCard(
                 modifier = Modifier
                     .size(54.dp)
                     .background(
-                        if (isUnlocked) activeColor.copy(alpha = 0.25f) else Color(0xFFF1F5F9),
+                        if (isUnlocked) activeColor.copy(alpha = 0.2f) else Color(0xFFF1F5F9),
                         RoundedCornerShape(27.dp)
                     )
                     .border(
@@ -459,21 +500,27 @@ fun AchievementCard(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = emoji,
-                    fontSize = 24.sp,
-                    modifier = Modifier.graphicsLayer(alpha = if (isUnlocked) 1f else 0.35f)
+                Icon(
+                    imageVector = icon,
+                    contentDescription = title,
+                    tint = if (isUnlocked) activeColor else Color(0xFF94A3B8),
+                    modifier = Modifier.size(26.dp)
                 )
                 if (!isUnlocked) {
                     Box(
                         modifier = Modifier
-                            .size(14.dp)
-                            .background(Color.White, RoundedCornerShape(7.dp))
-                            .border(1.dp, Color(0xFF94A3B8), RoundedCornerShape(7.dp))
+                            .size(16.dp)
+                            .background(Color.White, RoundedCornerShape(8.dp))
+                            .border(1.dp, Color(0xFF94A3B8), RoundedCornerShape(8.dp))
                             .align(Alignment.BottomEnd),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("🔒", fontSize = 8.sp)
+                        Icon(
+                            imageVector = Icons.Default.Lock,
+                            contentDescription = "Locked",
+                            tint = Color(0xFF64748B),
+                            modifier = Modifier.size(10.dp)
+                        )
                     }
                 }
             }
@@ -481,13 +528,13 @@ fun AchievementCard(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Black),
+                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
                     color = if (isUnlocked) Color(0xFF1A1C1E) else Color(0xFF64748B)
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = if (isUnlocked) desc else req,
-                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
+                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Normal),
                     color = if (isUnlocked) Color(0xFF374151) else Color(0xFF94A3B8)
                 )
             }

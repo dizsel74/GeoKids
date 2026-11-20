@@ -10,10 +10,18 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.Lightbulb
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Style
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.WorkspacePremium
+import androidx.compose.material.icons.outlined.EmojiEvents
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -188,7 +197,7 @@ fun QuizScreen(
                 Text(
                     text = if (isSpanish) "Prueba Rápida" else "Exit Ticket",
                     style = MaterialTheme.typography.headlineMedium.copy(
-                        fontWeight = FontWeight.Black,
+                        fontWeight = FontWeight.SemiBold,
                         fontSize = 24.sp
                     ),
                     color = Color(0xFF1A1C1E)
@@ -196,7 +205,7 @@ fun QuizScreen(
 
                 Text(
                     text = "${currentQuestionIndex + 1} / ${questions.size}",
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Black),
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                     color = Color(0xFF2563EB),
                     modifier = Modifier
                         .background(Color.White, RoundedCornerShape(12.dp))
@@ -234,7 +243,7 @@ fun QuizScreen(
                     Text(
                         text = if (isSpanish) "Pregunta ${currentQuestionIndex + 1}" else "Question ${currentQuestionIndex + 1}",
                         style = MaterialTheme.typography.labelMedium.copy(
-                            fontWeight = FontWeight.Black,
+                            fontWeight = FontWeight.Medium,
                             letterSpacing = 1.5.sp
                         ),
                         color = Color(0xFF2563EB)
@@ -243,7 +252,7 @@ fun QuizScreen(
                     Text(
                         text = if (isSpanish) question.textEs else question.textEn,
                         style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.ExtraBold,
+                            fontWeight = FontWeight.SemiBold,
                             fontSize = 19.sp,
                             lineHeight = 25.sp
                         ),
@@ -309,7 +318,7 @@ fun QuizScreen(
                             Text(
                                 text = optionText,
                                 style = MaterialTheme.typography.bodyLarge.copy(
-                                    fontWeight = FontWeight.ExtraBold,
+                                    fontWeight = FontWeight.Medium,
                                     fontSize = 17.sp
                                 ),
                                 color = textColor,
@@ -355,19 +364,30 @@ fun QuizScreen(
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         val isUserCorrect = selectedAnswerIndex == question.correctIndex
-                        Text(
-                            text = if (isUserCorrect) {
-                                if (isSpanish) "🎉 ¡Excelente!" else "🎉 Excellent!"
-                            } else {
-                                if (isSpanish) "💡 Recuerda:" else "💡 Tip:"
-                            },
-                            fontWeight = FontWeight.Black,
-                            fontSize = 16.sp,
-                            color = if (isUserCorrect) Color(0xFF047857) else Color(0xFFD97706)
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Icon(
+                                imageVector = if (isUserCorrect) Icons.Default.CheckCircle else Icons.Default.Lightbulb,
+                                contentDescription = null,
+                                tint = if (isUserCorrect) Color(0xFF047857) else Color(0xFFD97706),
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Text(
+                                text = if (isUserCorrect) {
+                                    if (isSpanish) "¡Excelente!" else "Excellent!"
+                                } else {
+                                    if (isSpanish) "Recuerda:" else "Tip:"
+                                },
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp,
+                                color = if (isUserCorrect) Color(0xFF047857) else Color(0xFFD97706)
+                            )
+                        }
                         Text(
                             text = if (isSpanish) question.explanationEs else question.explanationEn,
-                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal),
                             color = Color(0xFF475569)
                         )
                     }
@@ -411,20 +431,33 @@ fun QuizScreen(
                 shape = RoundedCornerShape(16.dp),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
             ) {
+                val actionText = if (!isAnswerSubmitted) {
+                    if (isSpanish) "Comprobar Respuesta" else "Check Answer"
+                } else if (currentQuestionIndex < questions.size - 1) {
+                    if (isSpanish) "Siguiente Pregunta" else "Next Question"
+                } else {
+                    if (isSpanish) "Ver Resultados" else "View Results"
+                }
+                val actionTint = if (selectedAnswerIndex != null) Color.White else Color(0xFF64748B)
                 Text(
-                    text = if (!isAnswerSubmitted) {
-                        if (isSpanish) "Comprobar Respuesta" else "Check Answer"
-                    } else {
-                        if (currentQuestionIndex < questions.size - 1) {
-                            if (isSpanish) "Siguiente Pregunta ➔" else "Next Question ➔"
-                        } else {
-                            if (isSpanish) "Ver Resultados 🎉" else "View Results 🎉"
-                        }
-                    },
-                    fontWeight = FontWeight.Black,
+                    text = actionText,
+                    fontWeight = FontWeight.SemiBold,
                     fontSize = 17.sp,
-                    color = if (selectedAnswerIndex != null) Color.White else Color(0xFF64748B)
+                    color = actionTint
                 )
+                if (isAnswerSubmitted) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        imageVector = if (currentQuestionIndex < questions.size - 1) {
+                            Icons.AutoMirrored.Filled.ArrowForward
+                        } else {
+                            Icons.Outlined.EmojiEvents
+                        },
+                        contentDescription = null,
+                        tint = actionTint,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
             }
 
         } else {
@@ -468,7 +501,7 @@ fun QuizScreen(
                     Text(
                         text = if (isSpanish) "¡Gran trabajo!" else "Great job!",
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontWeight = FontWeight.Black,
+                            fontWeight = FontWeight.SemiBold,
                             fontSize = 30.sp
                         ),
                         color = Color(0xFF1A1C1E),
@@ -479,7 +512,7 @@ fun QuizScreen(
                     Text(
                         text = "$score / ${questions.size}",
                         style = MaterialTheme.typography.displayMedium.copy(
-                            fontWeight = FontWeight.Black,
+                            fontWeight = FontWeight.SemiBold,
                             fontSize = 54.sp
                         ),
                         color = Color(0xFF2563EB),
@@ -489,14 +522,14 @@ fun QuizScreen(
                     // Fun response message
                     Text(
                         text = when {
-                            score == 10 -> if (isSpanish) "¡Eres un pro de la geometría! ¡Te sacaste un diez! 🥳" else "You are a geometry expert! Excellent! 🥳"
-                            score >= 8 -> if (isSpanish) "¡Casi perfecto! ¡Vas con todo, súper bien! 🌟" else "Almost perfect! Keep going, you're doing great! 🌟"
-                            score >= 6 -> if (isSpanish) "¡Súper bien hecho! ¡Aprendiste un montón hoy! 👍" else "Well done! You've learned a lot today! 👍"
-                            else -> if (isSpanish) "¡Sigue practicando! ¡A la próxima te sale de diez! 💪" else "Keep practicing! With practice you will be the best! 💪"
+                            score == 10 -> if (isSpanish) "¡Eres un pro de la geometría! ¡Te sacaste un diez!" else "You are a geometry expert! Excellent!"
+                            score >= 8 -> if (isSpanish) "¡Casi perfecto! ¡Vas con todo, súper bien!" else "Almost perfect! Keep going, you're doing great!"
+                            score >= 6 -> if (isSpanish) "¡Súper bien hecho! ¡Aprendiste un montón hoy!" else "Well done! You've learned a lot today!"
+                            else -> if (isSpanish) "¡Sigue practicando! ¡A la próxima te sale de diez!" else "Keep practicing! With practice you will be the best!"
                         },
                         style = MaterialTheme.typography.bodyLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 17.sp
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 16.sp
                         ),
                         color = Color(0xFF374151),
                         textAlign = TextAlign.Center,
@@ -506,11 +539,22 @@ fun QuizScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     // Session Reward Badges
-                    Text(
-                        text = if (isSpanish) "🏆 Tus Insignias de la Sesión" else "🏆 Your Session Badges",
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Black),
-                        color = Color(0xFF1A1C1E)
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.EmojiEvents,
+                            contentDescription = null,
+                            tint = Color(0xFF1A1C1E),
+                            modifier = Modifier.size(22.dp)
+                        )
+                        Text(
+                            text = if (isSpanish) "Tus Insignias de la Sesión" else "Your Session Badges",
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                            color = Color(0xFF1A1C1E)
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -522,7 +566,7 @@ fun QuizScreen(
                         // Badge 1: 3D Explorer
                         val isExp = com.example.ui.AchievementManager.hasExploredAll()
                         ResultsBadgeItem(
-                            emoji = "🧭",
+                            icon = Icons.Default.Explore,
                             title = if (isSpanish) "Explorador" else "Explorer",
                             isUnlocked = isExp,
                             color = Color(0xFFCD7F32) // Bronze
@@ -531,28 +575,28 @@ fun QuizScreen(
                         // Badge 2: Card Wise
                         val isFlip = com.example.ui.AchievementManager.hasFlippedAll()
                         ResultsBadgeItem(
-                            emoji = "📚",
+                            icon = Icons.Default.Style,
                             title = if (isSpanish) "Sabio" else "Card Wise",
                             isUnlocked = isFlip,
-                            color = Color(0xFFC0C0C0) // Silver
+                            color = Color(0xFF64748B) // Silver
                         )
 
                         // Badge 3: Super Star (on this quiz attempt)
                         val isStar = score >= 8
                         ResultsBadgeItem(
-                            emoji = "🌟",
+                            icon = Icons.Default.Star,
                             title = if (isSpanish) "Estrella" else "Super Star",
                             isUnlocked = isStar,
-                            color = Color(0xFFFFD700) // Gold
+                            color = Color(0xFFF59E0B) // Gold
                         )
 
                         // Badge 4: Perfect score
                         val isPerfect = score == 10
                         ResultsBadgeItem(
-                            emoji = "👑",
+                            icon = Icons.Default.WorkspacePremium,
                             title = if (isSpanish) "Mago" else "Wizard",
                             isUnlocked = isPerfect,
-                            color = Color(0xFFB9F2FF) // Diamond Blue
+                            color = Color(0xFF0EA5E9) // Diamond Blue
                         )
                     }
 
@@ -583,8 +627,8 @@ fun QuizScreen(
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = if (isSpanish) "Volver a Intentar" else "Try Again",
-                            fontWeight = FontWeight.Black,
-                            fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 17.sp,
                             color = Color.White
                         )
                     }
@@ -596,7 +640,7 @@ fun QuizScreen(
 
 @Composable
 fun ResultsBadgeItem(
-    emoji: String,
+    icon: ImageVector,
     title: String,
     isUnlocked: Boolean,
     color: Color
@@ -610,7 +654,7 @@ fun ResultsBadgeItem(
             modifier = Modifier
                 .size(60.dp)
                 .background(
-                    if (isUnlocked) color.copy(alpha = 0.2f) else Color(0xFFF1F5F9),
+                    if (isUnlocked) color.copy(alpha = 0.18f) else Color(0xFFF1F5F9),
                     RoundedCornerShape(30.dp)
                 )
                 .border(
@@ -620,28 +664,34 @@ fun ResultsBadgeItem(
                 ),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = emoji,
-                fontSize = 28.sp,
-                modifier = Modifier.graphicsLayer(alpha = if (isUnlocked) 1f else 0.35f)
+            Icon(
+                imageVector = icon,
+                contentDescription = title,
+                tint = if (isUnlocked) color else Color(0xFF94A3B8),
+                modifier = Modifier.size(28.dp)
             )
             if (!isUnlocked) {
                 Box(
                     modifier = Modifier
-                        .size(16.dp)
-                        .background(Color.White, RoundedCornerShape(8.dp))
-                        .border(1.dp, Color(0xFF94A3B8), RoundedCornerShape(8.dp))
+                        .size(18.dp)
+                        .background(Color.White, RoundedCornerShape(9.dp))
+                        .border(1.dp, Color(0xFF94A3B8), RoundedCornerShape(9.dp))
                         .align(Alignment.BottomEnd),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("🔒", fontSize = 9.sp)
+                    Icon(
+                        imageVector = Icons.Default.Lock,
+                        contentDescription = "Locked",
+                        tint = Color(0xFF64748B),
+                        modifier = Modifier.size(11.dp)
+                    )
                 }
             }
         }
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = title,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.Medium,
             fontSize = 11.sp,
             color = if (isUnlocked) Color(0xFF1A1C1E) else Color(0xFF94A3B8)
         )

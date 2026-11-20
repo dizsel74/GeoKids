@@ -8,13 +8,18 @@ import kotlinx.coroutines.delay
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.HelpOutline
+import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.filled.HorizontalRule
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Autorenew
+import androidx.compose.material.icons.filled.Square
+import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -110,6 +116,8 @@ sealed class GeometricShape(
 @Composable
 fun Explorer3DScreen(
     isSpanish: Boolean,
+    showHelpDialog: Boolean = false,
+    onDismissHelpDialog: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val shapes = listOf(
@@ -132,7 +140,6 @@ fun Explorer3DScreen(
     var showEdges by remember { mutableStateOf(true) }
     var showFaces by remember { mutableStateOf(true) }
     
-    var showHelpDialog by remember { mutableStateOf(false) }
     var dropdownExpanded by remember { mutableStateOf(false) }
 
     val scrollState = rememberScrollState()
@@ -149,46 +156,6 @@ fun Explorer3DScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // App Heading / Section title
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = if (isSpanish) "Explorador 3D" else "3D Explorer",
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        fontWeight = FontWeight.Black,
-                        fontSize = 24.sp
-                    ),
-                    color = Color(0xFF1A1C1E)
-                )
-                Text(
-                    text = if (isSpanish) "¡Toca y gira las figuras con tu dedo!" else "Touch and spin the shapes with your finger!",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 13.sp
-                    ),
-                    color = Color(0xFF74777F)
-                )
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-            IconButton(
-                onClick = { showHelpDialog = true },
-                modifier = Modifier
-                    .background(Color.White, RoundedCornerShape(12.dp))
-                    .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(12.dp))
-                    .size(44.dp)
-                    .testTag("help_button")
-            ) {
-                Icon(
-                    imageVector = Icons.Default.HelpOutline,
-                    contentDescription = "Help",
-                    tint = Color(0xFF2563EB)
-                )
-            }
-        }
 
         // Dropdown Menu Selector Card
         Card(
@@ -217,9 +184,9 @@ fun Explorer3DScreen(
                     ) {
                         Column {
                             Text(
-                                text = if (isSpanish) "Elige tu figura geométrica:" else "Choose your 3D Shape:",
+                                text = if (isSpanish) "Elige tu figura geométrica:" else "Choose 3D shape",
                                 style = MaterialTheme.typography.labelSmall.copy(
-                                    fontWeight = FontWeight.Bold,
+                                    fontWeight = FontWeight.Medium,
                                     color = Color(0xFF2563EB)
                                 )
                             )
@@ -230,11 +197,11 @@ fun Explorer3DScreen(
                                 Text(
                                     text = if (showTranslation) selectedShape.nameEs else selectedShape.nameEn,
                                     style = MaterialTheme.typography.titleMedium.copy(
-                                        fontWeight = FontWeight.ExtraBold,
+                                        fontWeight = FontWeight.SemiBold,
                                         color = Color(0xFF1A1C1E)
                                     )
                                 )
-                                Button(
+                                IconButton(
                                     onClick = {
                                         scope.launch {
                                             showTranslation = true
@@ -242,13 +209,13 @@ fun Explorer3DScreen(
                                             showTranslation = false
                                         }
                                     },
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                                    contentPadding = PaddingValues(0.dp),
-                                    modifier = Modifier.size(24.dp)
+                                    modifier = Modifier.size(28.dp)
                                 ) {
-                                    Text(
-                                        text = "🇲🇽",
-                                        fontSize = 16.sp
+                                    Icon(
+                                        imageVector = Icons.Default.Translate,
+                                        contentDescription = if (isSpanish) "Traducir" else "Translate",
+                                        tint = Color(0xFF2563EB),
+                                        modifier = Modifier.size(18.dp)
                                     )
                                 }
                             }
@@ -273,7 +240,7 @@ fun Explorer3DScreen(
                             text = {
                                 Text(
                                     text = if (isSpanish) shape.nameEs else shape.nameEn,
-                                    fontWeight = FontWeight.Bold,
+                                    fontWeight = if (selectedShape == shape) FontWeight.SemiBold else FontWeight.Medium,
                                     fontSize = 16.sp,
                                     color = if (selectedShape == shape) Color(0xFF2563EB) else Color(0xFF1A1C1E)
                                 )
@@ -313,72 +280,7 @@ fun Explorer3DScreen(
             }
         }
 
-        // Feature Toggles Row (Vertices, Edges, Faces)
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(16.dp)),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(12.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Text(
-                    text = if (isSpanish) "Modos de Vista (¡Combínalos!)" else "View Options (Combine them!)",
-                    style = MaterialTheme.typography.titleSmall.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1A1C1E)
-                    ),
-                    modifier = Modifier.padding(horizontal = 4.dp)
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    // Vertices Toggle
-                    ToggleButton(
-                        text = if (isSpanish) "Esquinas\n(Vértices)" else "Corners\n(Vertices)",
-                        isSelected = showVertices,
-                        onSelectedChange = { showVertices = it },
-                        activeColor = Color(0xFFEF4444), // Red for vertices
-                        bgColor = Color(0xFFFEF2F2),
-                        modifier = Modifier
-                            .weight(1f)
-                            .testTag("toggle_vertices")
-                    )
-
-                    // Edges Toggle
-                    ToggleButton(
-                        text = if (isSpanish) "Líneas\n(Aristas)" else "Lines\n(Edges)",
-                        isSelected = showEdges,
-                        onSelectedChange = { showEdges = it },
-                        activeColor = Color(0xFF2563EB), // Blue for edges
-                        bgColor = Color(0xFFEFF6FF),
-                        modifier = Modifier
-                            .weight(1f)
-                            .testTag("toggle_edges")
-                    )
-
-                    // Faces Toggle
-                    ToggleButton(
-                        text = if (isSpanish) "Caras\n(Lados)" else "Sides\n(Faces)",
-                        isSelected = showFaces,
-                        onSelectedChange = { showFaces = it },
-                        activeColor = Color(0xFF10B981), // Green for faces
-                        bgColor = Color(0xFFECFDF5),
-                        modifier = Modifier
-                            .weight(1f)
-                            .testTag("toggle_faces")
-                    )
-                }
-            }
-        }
-
-        // Live Count Statistics Card (Bilingual counts)
+        // Interactive Shape Statistics Card (Tap Vertices, Edges, or Faces to toggle)
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -392,54 +294,82 @@ fun Explorer3DScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text(
-                    text = if (isSpanish) "Datos de la Figura" else "Shape Statistics",
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color(0xFF1A1C1E)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    Text(
+                        text = if (isSpanish) "Datos de la Figura" else "Shape Statistics",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFF1A1C1E)
+                        )
                     )
-                )
+                    Text(
+                        text = if (isSpanish) "Toca cada botón para mostrar u ocultar" else "Tap each button to show or hide",
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 12.sp
+                        ),
+                        color = Color(0xFF64748B)
+                    )
+                }
 
-                // Stats Counters
+                // Interactive Stats Toggle Counters
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Vertices Count
+                    // Vertices Toggle Counter
                     StatCounter(
                         count = selectedShape.vertices,
                         labelEs = "Vértices",
                         labelEn = "Vertices",
-                        color = Color(0xFFEF4444),
+                        subLabelEs = "Esquinas",
+                        subLabelEn = "Corners",
+                        isSelected = showVertices,
+                        onToggle = { showVertices = it },
+                        activeColor = Color(0xFFEF4444),
+                        bgColor = Color(0xFFFEF2F2),
                         isSpanish = isSpanish,
-                        modifier = Modifier.testTag("stat_vertices")
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag("stat_vertices")
                     )
 
-                    // Divider
-                    Box(modifier = Modifier.width(1.dp).height(50.dp).background(Color(0xFFE2E8F0)))
-
-                    // Edges Count
+                    // Edges Toggle Counter
                     StatCounter(
                         count = selectedShape.edges,
                         labelEs = "Aristas",
                         labelEn = "Edges",
-                        color = Color(0xFF2563EB),
+                        subLabelEs = "Líneas",
+                        subLabelEn = "Lines",
+                        isSelected = showEdges,
+                        onToggle = { showEdges = it },
+                        activeColor = Color(0xFF2563EB),
+                        bgColor = Color(0xFFEFF6FF),
                         isSpanish = isSpanish,
-                        modifier = Modifier.testTag("stat_edges")
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag("stat_edges")
                     )
 
-                    // Divider
-                    Box(modifier = Modifier.width(1.dp).height(50.dp).background(Color(0xFFE2E8F0)))
-
-                    // Faces Count
+                    // Faces Toggle Counter
                     StatCounter(
                         count = selectedShape.faces,
                         labelEs = "Caras",
                         labelEn = "Faces",
-                        color = Color(0xFF10B981),
+                        subLabelEs = "Lados",
+                        subLabelEn = "Sides",
+                        isSelected = showFaces,
+                        onToggle = { showFaces = it },
+                        activeColor = Color(0xFF10B981),
+                        bgColor = Color(0xFFECFDF5),
                         isSpanish = isSpanish,
-                        modifier = Modifier.testTag("stat_faces")
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag("stat_faces")
                     )
                 }
 
@@ -462,7 +392,7 @@ fun Explorer3DScreen(
                     Text(
                         text = if (isSpanish) selectedShape.descriptionEs else selectedShape.descriptionEn,
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Medium,
+                            fontWeight = FontWeight.Normal,
                             lineHeight = 20.sp
                         ),
                         color = Color(0xFF374151)
@@ -475,45 +405,43 @@ fun Explorer3DScreen(
     // Interactive Help Dialog for kids
     if (showHelpDialog) {
         AlertDialog(
-            onDismissRequest = { showHelpDialog = false },
+            onDismissRequest = onDismissHelpDialog,
+            containerColor = Color(0xFF1D1D1B),
+            titleContentColor = Color(0xFFFFFFFF),
+            textContentColor = Color(0xFFFFFFFF),
             title = {
                 Text(
-                    text = if (isSpanish) "🤔 ¿Cómo funciona?" else "🤔 How does it work?",
-                    fontWeight = FontWeight.Black,
-                    color = Color(0xFF1E3A8A)
+                    text = if (isSpanish) "¿Cómo funciona?" else "How does it work?",
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(0xFFFFFFFF)
                 )
             },
             text = {
-                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Text(
-                        text = if (isSpanish) 
-                            "👋 ¡Hola, pequeño explorador! Aquí puedes aprender cómo están hechas las figuras 3D:" 
-                            else 
-                            "👋 Hello, little explorer! Here is how you can study these 3D shapes:",
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF374151)
-                    )
-                    
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     BulletPoint(
-                        emoji = "🔄",
+                        icon = Icons.Default.Autorenew,
+                        iconTint = Color(0xFF93C5FD),
                         textEs = "Gira con tu dedo: Arrastra tu dedo por el visor para girar el cuerpo en todas direcciones.",
                         textEn = "Spin with your finger: Drag across the screen to rotate the shape in all directions.",
                         isSpanish = isSpanish
                     )
                     BulletPoint(
-                        emoji = "🔴",
+                        icon = Icons.Default.Circle,
+                        iconTint = Color(0xFFEF4444),
                         textEs = "Vértices: Son las 'esquinas' donde se juntan las líneas. ¡Se iluminan con esferas rojas!",
                         textEn = "Vertices: These are the 'corners' where lines meet. They glow with red spheres!",
                         isSpanish = isSpanish
                     )
                     BulletPoint(
-                        emoji = "➖",
+                        icon = Icons.Default.HorizontalRule,
+                        iconTint = Color(0xFF60A5FA),
                         textEs = "Aristas: Son las 'líneas' o bordes que conectan las esquinas. ¡Se vuelven de color azul fuerte!",
                         textEn = "Edges: These are the 'lines' or borders connecting corners. They turn solid deep blue!",
                         isSpanish = isSpanish
                     )
                     BulletPoint(
-                        emoji = "🟩",
+                        icon = Icons.Default.Square,
+                        iconTint = Color(0xFF10B981),
                         textEs = "Caras: Son las superficies 'planas' o lados de la figura. ¡Se pintan de color verde!",
                         textEn = "Faces: These are the flat side surfaces of the shape. They are painted green!",
                         isSpanish = isSpanish
@@ -522,13 +450,16 @@ fun Explorer3DScreen(
             },
             confirmButton = {
                 Button(
-                    onClick = { showHelpDialog = false },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B82F6)),
+                    onClick = onDismissHelpDialog,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF3B82F6),
+                        contentColor = Color(0xFFFFFFFF)
+                    ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
                         text = if (isSpanish) "¡Entendido!" else "Got it!",
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             },
@@ -537,60 +468,7 @@ fun Explorer3DScreen(
     }
 }
 
-@Composable
-fun ToggleButton(
-    text: String,
-    isSelected: Boolean,
-    onSelectedChange: (Boolean) -> Unit,
-    activeColor: Color,
-    bgColor: Color,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier
-            .height(72.dp)
-            .clickable { onSelectedChange(!isSelected) },
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) bgColor else Color.White
-        ),
-        border = borderStroke(
-            width = if (isSelected) 2.dp else 1.dp,
-            color = if (isSelected) activeColor else Color(0xFFE2E8F0)
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            if (isSelected) {
-                Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = "Selected",
-                    tint = activeColor,
-                    modifier = Modifier
-                        .size(18.dp)
-                        .padding(end = 2.dp)
-                )
-            }
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Bold,
-                    fontSize = 13.sp,
-                    lineHeight = 16.sp
-                ),
-                color = if (isSelected) activeColor else Color(0xFF4B5563),
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}
-
-private fun borderStroke(width: androidx.compose.ui.unit.Dp, color: Color) = 
+private fun borderStroke(width: androidx.compose.ui.unit.Dp, color: Color) =
     androidx.compose.foundation.BorderStroke(width, color)
 
 @Composable
@@ -598,61 +476,138 @@ fun StatCounter(
     count: Int,
     labelEs: String,
     labelEn: String,
-    color: Color,
+    subLabelEs: String,
+    subLabelEn: String,
+    isSelected: Boolean,
+    onToggle: (Boolean) -> Unit,
+    activeColor: Color,
+    bgColor: Color,
     isSpanish: Boolean,
     modifier: Modifier = Modifier
 ) {
-    Column(
+    val containerColor by animateColorAsState(
+        targetValue = if (isSelected) bgColor else Color(0xFFF1F5F9),
+        label = "stat_container_color"
+    )
+    val borderColor by animateColorAsState(
+        targetValue = if (isSelected) activeColor else Color(0xFF94A3B8),
+        label = "stat_border_color"
+    )
+    val primaryContentColor by animateColorAsState(
+        targetValue = if (isSelected) activeColor else Color(0xFF64748B),
+        label = "stat_primary_content_color"
+    )
+    val secondaryContentColor by animateColorAsState(
+        targetValue = if (isSelected) Color(0xFF374151) else Color(0xFF64748B),
+        label = "stat_secondary_content_color"
+    )
+
+    Card(
+        onClick = { onToggle(!isSelected) },
         modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = containerColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        border = borderStroke(
+            width = if (isSelected) 2.dp else 1.5.dp,
+            color = borderColor
+        )
     ) {
         Box(
             modifier = Modifier
-                .size(54.dp)
-                .background(color.copy(alpha = 0.12f), RoundedCornerShape(16.dp))
-                .border(2.dp, color, RoundedCornerShape(16.dp)),
-            contentAlignment = Alignment.Center
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 10.dp)
         ) {
-            Text(
-                text = count.toString(),
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontWeight = FontWeight.Black,
-                    fontSize = 28.sp
-                ),
-                color = color
-            )
+            // Active / inactive status badge in top-right corner
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .size(18.dp)
+                    .clip(CircleShape)
+                    .background(if (isSelected) activeColor else Color.Transparent)
+                    .border(
+                        width = 1.5.dp,
+                        color = if (isSelected) activeColor else Color(0xFF94A3B8),
+                        shape = CircleShape
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                if (isSelected) {
+                    Icon(
+                        imageVector = Icons.Default.Check,
+                        contentDescription = if (isSpanish) "Activado" else "Enabled",
+                        tint = Color.White,
+                        modifier = Modifier.size(12.dp)
+                    )
+                }
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 6.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                Text(
+                    text = count.toString(),
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 28.sp,
+                        lineHeight = 32.sp
+                    ),
+                    color = primaryContentColor
+                )
+                Text(
+                    text = if (isSpanish) labelEs else labelEn,
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 13.sp
+                    ),
+                    color = secondaryContentColor,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = "(${if (isSpanish) subLabelEs else subLabelEn})",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 11.sp
+                    ),
+                    color = secondaryContentColor,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = if (isSpanish) labelEs else labelEn,
-            style = MaterialTheme.typography.labelMedium.copy(
-                fontWeight = FontWeight.ExtraBold
-            ),
-            color = Color(0xFF374151)
-        )
     }
 }
 
 @Composable
 fun BulletPoint(
-    emoji: String,
+    icon: ImageVector,
+    iconTint: Color,
     textEs: String,
     textEn: String,
     isSpanish: Boolean
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.Top
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Text(
-            text = "$emoji ",
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(top = 1.dp)
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = iconTint,
+            modifier = Modifier
+                .padding(top = 2.dp)
+                .size(18.dp)
         )
         Text(
             text = if (isSpanish) textEs else textEn,
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFF4B5563)
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontWeight = FontWeight.Normal
+            ),
+            color = Color(0xFFFFFFFF)
         )
     }
 }

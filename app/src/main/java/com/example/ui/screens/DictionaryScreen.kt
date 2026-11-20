@@ -11,7 +11,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Lightbulb
+import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -275,7 +277,7 @@ fun DictionaryScreen(
             Text(
                 text = if (isSpanish) "Polígonos y Cuerpos" else "Polygons & Solids",
                 style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Black,
+                    fontWeight = FontWeight.SemiBold,
                     fontSize = 24.sp
                 ),
                 color = Color(0xFF1A1C1E)
@@ -284,7 +286,7 @@ fun DictionaryScreen(
                 text = if (isSpanish) "Explora la estructura técnica de los polígonos y la magia de los cuerpos 3D." 
                        else "Explore the technical structure of polygons and the magic of 3D solids.",
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.Normal,
                     fontSize = 13.sp
                 ),
                 color = Color(0xFF74777F)
@@ -312,7 +314,7 @@ fun DictionaryScreen(
             ) {
                 Text(
                     text = if (isSpanish) "Polígonos 2D" else "2D Polygons",
-                    fontWeight = FontWeight.Black,
+                    fontWeight = FontWeight.SemiBold,
                     fontSize = 12.5.sp
                 )
             }
@@ -329,7 +331,7 @@ fun DictionaryScreen(
             ) {
                 Text(
                     text = if (isSpanish) "De 2D a 3D" else "Flat to Solid (3D)",
-                    fontWeight = FontWeight.Black,
+                    fontWeight = FontWeight.SemiBold,
                     fontSize = 12.5.sp
                 )
             }
@@ -352,7 +354,7 @@ fun DictionaryScreen(
                         Text(
                             text = categoryName,
                             style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Black,
+                                fontWeight = FontWeight.SemiBold,
                                 color = Color(0xFF1E3A8A)
                             ),
                             modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
@@ -409,7 +411,7 @@ fun DictionaryCard(
                     Text(
                         text = if (isSpanish) "2D Plano" else "2D Flat",
                         style = MaterialTheme.typography.labelSmall.copy(
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.Medium,
                             color = Color(0xFF74777F)
                         )
                     )
@@ -420,7 +422,7 @@ fun DictionaryCard(
                         Text(
                             text = if (isSpanish) item.flatEs else item.flatEn,
                             style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.ExtraBold,
+                                fontWeight = FontWeight.SemiBold,
                                 color = item.color3D
                             ),
                             textAlign = TextAlign.Center
@@ -428,7 +430,7 @@ fun DictionaryCard(
                         Text(
                             text = if (isSpanish) item.flatEn else item.flatEs,
                             style = MaterialTheme.typography.bodySmall.copy(
-                                fontWeight = FontWeight.Medium,
+                                fontWeight = FontWeight.Normal,
                                 color = Color(0xFF64748B)
                             ),
                             textAlign = TextAlign.Center
@@ -443,7 +445,7 @@ fun DictionaryCard(
                     modifier = Modifier.padding(horizontal = 4.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ArrowForward,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                         contentDescription = "Grows to",
                         tint = item.color3D,
                         modifier = Modifier.size(24.dp)
@@ -451,7 +453,7 @@ fun DictionaryCard(
                     Text(
                         text = if (isSpanish) "¡Crece!" else "Grows!",
                         style = MaterialTheme.typography.labelSmall.copy(
-                            fontWeight = FontWeight.Black,
+                            fontWeight = FontWeight.Medium,
                             fontSize = 11.sp,
                             color = item.color3D
                         )
@@ -466,7 +468,7 @@ fun DictionaryCard(
                     Text(
                         text = if (isSpanish) "3D Sólido" else "3D Solid",
                         style = MaterialTheme.typography.labelSmall.copy(
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.Medium,
                             color = Color(0xFF74777F)
                         )
                     )
@@ -477,7 +479,7 @@ fun DictionaryCard(
                         Text(
                             text = if (isSpanish) item.solidEs else item.solidEn,
                             style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Black,
+                                fontWeight = FontWeight.SemiBold,
                                 color = item.color3D
                             ),
                             textAlign = TextAlign.Center
@@ -485,7 +487,7 @@ fun DictionaryCard(
                         Text(
                             text = if (isSpanish) item.solidEn else item.solidEs,
                             style = MaterialTheme.typography.bodySmall.copy(
-                                fontWeight = FontWeight.Medium,
+                                fontWeight = FontWeight.Normal,
                                 color = Color(0xFF64748B)
                             ),
                             textAlign = TextAlign.Center
@@ -502,18 +504,29 @@ fun DictionaryCard(
                     .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(14.dp))
                     .padding(12.dp)
             ) {
-                Text(
-                    text = if (isSpanish) "💡 ¿Cómo se forma?" else "💡 How is it made?",
-                    style = MaterialTheme.typography.labelMedium.copy(
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color(0xFF1A1C1E)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Lightbulb,
+                        contentDescription = null,
+                        tint = Color(0xFFF59E0B),
+                        modifier = Modifier.size(16.dp)
                     )
-                )
+                    Text(
+                        text = if (isSpanish) "¿Cómo se forma?" else "How is it made?",
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFF1A1C1E)
+                        )
+                    )
+                }
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = if (isSpanish) item.explanationEs else item.explanationEn,
                     style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Medium,
+                        fontWeight = FontWeight.Normal,
                         lineHeight = 18.sp
                     ),
                     color = Color(0xFF374151)
@@ -849,13 +862,13 @@ fun Polygon2DCard(
                     Text(
                         text = if (showTranslation) shape.nameEs else shape.nameEn,
                         style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Black,
+                            fontWeight = FontWeight.SemiBold,
                             color = Color(0xFF1E3A8A)
                         )
                     )
                     
-                    // Secret translation button
-                    Button(
+                    // Translation button
+                    IconButton(
                         onClick = {
                             scope.launch {
                                 showTranslation = true
@@ -863,13 +876,13 @@ fun Polygon2DCard(
                                 showTranslation = false
                             }
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                        contentPadding = PaddingValues(0.dp),
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(28.dp)
                     ) {
-                        Text(
-                            text = "🇲🇽",
-                            fontSize = 16.sp
+                        Icon(
+                            imageVector = Icons.Default.Translate,
+                            contentDescription = if (isSpanish) "Traducir" else "Translate",
+                            tint = Color(0xFF2563EB),
+                            modifier = Modifier.size(18.dp)
                         )
                     }
                 }
@@ -877,7 +890,7 @@ fun Polygon2DCard(
                 Text(
                     text = if (isSpanish) shape.descEs else shape.descEn,
                     style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Medium,
+                        fontWeight = FontWeight.Normal,
                         lineHeight = 17.sp
                     ),
                     color = Color(0xFF475569)
