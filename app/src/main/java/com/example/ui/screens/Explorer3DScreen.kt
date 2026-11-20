@@ -490,15 +490,15 @@ fun StatCounter(
         label = "stat_container_color"
     )
     val borderColor by animateColorAsState(
-        targetValue = if (isSelected) activeColor else Color(0xFF94A3B8),
+        targetValue = if (isSelected) activeColor else Color(0xFF64748B),
         label = "stat_border_color"
     )
     val primaryContentColor by animateColorAsState(
-        targetValue = if (isSelected) activeColor else Color(0xFF64748B),
+        targetValue = if (isSelected) activeColor else Color(0xFF475569),
         label = "stat_primary_content_color"
     )
     val secondaryContentColor by animateColorAsState(
-        targetValue = if (isSelected) Color(0xFF374151) else Color(0xFF64748B),
+        targetValue = if (isSelected) Color(0xFF374151) else Color(0xFF475569),
         label = "stat_secondary_content_color"
     )
 
@@ -509,7 +509,7 @@ fun StatCounter(
         colors = CardDefaults.cardColors(containerColor = containerColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         border = borderStroke(
-            width = if (isSelected) 2.dp else 1.5.dp,
+            width = 2.dp,
             color = borderColor
         )
     ) {
@@ -526,8 +526,8 @@ fun StatCounter(
                     .clip(CircleShape)
                     .background(if (isSelected) activeColor else Color.Transparent)
                     .border(
-                        width = 1.5.dp,
-                        color = if (isSelected) activeColor else Color(0xFF94A3B8),
+                        width = 2.dp,
+                        color = if (isSelected) activeColor else Color(0xFF64748B),
                         shape = CircleShape
                     ),
                 contentAlignment = Alignment.Center

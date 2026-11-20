@@ -82,22 +82,12 @@ private fun getHtmlContent(): String {
                     width: 100%;
                     height: 100%;
                 }
-                #loading {
-                    position: absolute;
-                    top: 10px;
-                    left: 10px;
-                    font-family: sans-serif;
-                    font-size: 12px;
-                    color: #888;
-                    pointer-events: none;
-                }
             </style>
             <!-- Try to load Three.js from CDN for premium WebGL rendering -->
             <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" onerror="onThreeError()"></script>
         </head>
         <body>
             <div id="canvas-container">
-                <div id="loading">Loading 3D...</div>
                 <canvas id="geometryCanvas"></canvas>
             </div>
 
@@ -114,7 +104,6 @@ private fun getHtmlContent(): String {
                 try {
                     if (typeof THREE !== 'undefined') {
                         hasThree = true;
-                        document.getElementById('loading').innerText = "3D WebGL (Three.js)";
                     } else {
                         throw new Error("Three.js not loaded");
                     }
@@ -124,7 +113,6 @@ private fun getHtmlContent(): String {
 
                 function onThreeError() {
                     hasThree = false;
-                    document.getElementById('loading').innerText = "3D Interactive Canvas";
                 }
 
                 // Global setShape function called from Android
@@ -191,6 +179,33 @@ private fun getHtmlContent(): String {
                 var threeRenderer = null;
                 var scene, camera, renderer, currentMesh, verticesGroup, edgesGroup;
                 var pointLight, ambientLight;
+
+                // Thick, high-contrast edges. WebGL ignores linewidth > 1,
+                // so each edge is drawn as a small cylinder (tube).
+                var EDGE_COLOR = 0x0B1A4F;   // deep navy: strong contrast vs faces and background
+                var EDGE_RADIUS = 0.035;
+                var edgeMaterial = null;
+
+                function addThickEdges(pos) {
+                    if (!edgeMaterial) {
+                        edgeMaterial = new THREE.MeshPhongMaterial({ color: EDGE_COLOR, shininess: 20 });
+                    }
+                    var up = new THREE.Vector3(0, 1, 0);
+                    for (var i = 0; i + 5 < pos.length; i += 6) {
+                        var a = new THREE.Vector3(pos[i], pos[i+1], pos[i+2]);
+                        var b = new THREE.Vector3(pos[i+3], pos[i+4], pos[i+5]);
+                        var dir = new THREE.Vector3().subVectors(b, a);
+                        var len = dir.length();
+                        if (len < 1e-6) continue;
+                        var tube = new THREE.Mesh(
+                            new THREE.CylinderGeometry(EDGE_RADIUS, EDGE_RADIUS, len, 10, 1),
+                            edgeMaterial
+                        );
+                        tube.position.copy(a).add(b).multiplyScalar(0.5);
+                        tube.quaternion.setFromUnitVectors(up, dir.normalize());
+                        edgesGroup.add(tube);
+                    }
+                }
 
                 if (hasThree) {
                     initThree();
@@ -265,9 +280,9 @@ private fun getHtmlContent(): String {
                     // Clean previous elements
                     if (currentMesh) scene.remove(currentMesh);
                     while(verticesGroup.children.length > 0) verticesGroup.remove(verticesGroup.children[0]);
-                    while(edgesGroup.children.length > 0) edgesGroup.remove(edgesGroup.children[0]);
+                    while(edgesGroup.children.length > 0) { var c = edgesGroup.children[0]; if (c.geometry) c.geometry.dispose(); edgesGroup.remove(c); }
 
-                    var geometry, meshMaterial, edgesGeometry, lineMaterial;
+                    var geometry, meshMaterial;
                     var vertexPositions = [];
 
                     // Material colors: Soft playful baby blue for faces, bold dark blue for edges, orange for vertices
@@ -278,11 +293,6 @@ private fun getHtmlContent(): String {
                         side: THREE.DoubleSide,
                         flatShading: true,
                         shininess: 80
-                    });
-
-                    lineMaterial = new THREE.LineBasicMaterial({
-                        color: 0x2244CC,
-                        linewidth: 4 // Note: linewidth > 1 usually not supported by WebGL, so we draw thick edges
                     });
 
                     if (currentShape === 'cube') {
@@ -300,8 +310,7 @@ private fun getHtmlContent(): String {
 
                         // Edges
                         var edgesGeo = new THREE.EdgesGeometry(geometry);
-                        var lineSegments = new THREE.LineSegments(edgesGeo, new THREE.LineBasicMaterial({ color: 0x1A35B3, linewidth: 3 }));
-                        edgesGroup.add(lineSegments);
+                        addThickEdges(edgesGeo.attributes.position.array);
 
                     } else if (currentShape === 'prism') {
                         geometry = new THREE.BoxGeometry(1.8, 0.9, 0.9);
@@ -316,8 +325,7 @@ private fun getHtmlContent(): String {
                         ];
 
                         var edgesGeo = new THREE.EdgesGeometry(geometry);
-                        var lineSegments = new THREE.LineSegments(edgesGeo, new THREE.LineBasicMaterial({ color: 0x1A35B3, linewidth: 3 }));
-                        edgesGroup.add(lineSegments);
+                        addThickEdges(edgesGeo.attributes.position.array);
 
                     } else if (currentShape === 'pyramid') {
                         // Let's create a custom pyramid with square base
@@ -386,8 +394,7 @@ private fun getHtmlContent(): String {
                         
                         var edgesGeo = new THREE.BufferGeometry();
                         edgesGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
-                        var lineSegments = new THREE.LineSegments(edgesGeo, new THREE.LineBasicMaterial({ color: 0x1A35B3, linewidth: 3 }));
-                        edgesGroup.add(lineSegments);
+                        addThickEdges(edgesGeo.attributes.position.array);
 
                     } else if (currentShape === 'triangular_prism') {
                         // Custom triangular prism in Three.js
@@ -444,8 +451,7 @@ private fun getHtmlContent(): String {
                         }
                         var edgesGeo = new THREE.BufferGeometry();
                         edgesGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
-                        var lineSegments = new THREE.LineSegments(edgesGeo, new THREE.LineBasicMaterial({ color: 0x1A35B3, linewidth: 3 }));
-                        edgesGroup.add(lineSegments);
+                        addThickEdges(edgesGeo.attributes.position.array);
 
                     } else if (currentShape === 'triangular_pyramid') {
                         // Custom triangular pyramid in Three.js
@@ -492,8 +498,7 @@ private fun getHtmlContent(): String {
                         }
                         var edgesGeo = new THREE.BufferGeometry();
                         edgesGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
-                        var lineSegments = new THREE.LineSegments(edgesGeo, new THREE.LineBasicMaterial({ color: 0x1A35B3, linewidth: 3 }));
-                        edgesGroup.add(lineSegments);
+                        addThickEdges(edgesGeo.attributes.position.array);
                     } else if (currentShape === 'cylinder') {
                         geometry = new THREE.CylinderGeometry(0.5, 0.5, 1.2, 24, 1, false);
                         currentMesh = new THREE.Mesh(geometry, meshMaterial);
@@ -502,9 +507,8 @@ private fun getHtmlContent(): String {
                         // Cylinder has no traditional corners/vertices
                         vertexPositions = [];
 
-                        var edgesGeo = new THREE.EdgesGeometry(geometry);
-                        var lineSegments = new THREE.LineSegments(edgesGeo, new THREE.LineBasicMaterial({ color: 0x1A35B3, linewidth: 3 }));
-                        edgesGroup.add(lineSegments);
+                        var edgesGeo = new THREE.EdgesGeometry(geometry, 30); // only the two circular rims
+                        addThickEdges(edgesGeo.attributes.position.array);
                     }
 
                     // Add sphere helpers for Vertices
@@ -825,20 +829,27 @@ private fun getHtmlContent(): String {
 
                         // Draw Edges (Bold dark lines)
                         if (config.showEdges) {
-                            ctx.strokeStyle = '#2244CC';
-                            ctx.lineWidth = 5;
                             ctx.lineCap = 'round';
                             ctx.lineJoin = 'round';
 
-                            for (var i = 0; i < model.edges.length; i++) {
-                                var e = model.edges[i];
-                                var p1 = transformedVertices[e[0]].proj;
-                                var p2 = transformedVertices[e[1]].proj;
-                                
-                                ctx.beginPath();
-                                ctx.moveTo(p1.x, p1.y);
-                                ctx.lineTo(p2.x, p2.y);
-                                ctx.stroke();
+                            // Two passes: white halo underneath, then deep navy line on top
+                            var passes = [
+                                { color: 'rgba(255,255,255,0.9)', width: 10 },
+                                { color: '#0B1A4F', width: 6 }
+                            ];
+                            for (var pIdx = 0; pIdx < passes.length; pIdx++) {
+                                ctx.strokeStyle = passes[pIdx].color;
+                                ctx.lineWidth = passes[pIdx].width;
+                                for (var i = 0; i < model.edges.length; i++) {
+                                    var e = model.edges[i];
+                                    var p1 = transformedVertices[e[0]].proj;
+                                    var p2 = transformedVertices[e[1]].proj;
+
+                                    ctx.beginPath();
+                                    ctx.moveTo(p1.x, p1.y);
+                                    ctx.lineTo(p2.x, p2.y);
+                                    ctx.stroke();
+                                }
                             }
                         }
 
