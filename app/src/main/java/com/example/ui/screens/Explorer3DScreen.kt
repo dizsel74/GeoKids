@@ -16,7 +16,6 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.HorizontalRule
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material.icons.filled.Square
 import androidx.compose.material.icons.filled.Translate
@@ -34,6 +33,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.components.GeometryWebView
+import com.example.ui.theme.GeoMint
+import com.example.ui.theme.GeoMintBorder
+import com.example.ui.theme.GeoMintCard
+import com.example.ui.theme.GeoMintSurface
+import com.example.ui.theme.GeoNavy
+import com.example.ui.theme.GeoOrange
 
 sealed class GeometricShape(
     val id: String,
@@ -144,8 +149,7 @@ fun Explorer3DScreen(
 
     val scrollState = rememberScrollState()
 
-    // Solid high-contrast Slate-light background
-    val backgroundColor = Color(0xFFF7F9FC)
+    val backgroundColor = GeoMintSurface
 
     Column(
         modifier = modifier
@@ -161,7 +165,7 @@ fun Explorer3DScreen(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(16.dp)),
+                .border(1.dp, GeoMintBorder, RoundedCornerShape(16.dp)),
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
@@ -187,7 +191,7 @@ fun Explorer3DScreen(
                                 text = if (isSpanish) "Elige tu figura geométrica:" else "Choose 3D shape",
                                 style = MaterialTheme.typography.labelSmall.copy(
                                     fontWeight = FontWeight.Medium,
-                                    color = Color(0xFF2563EB)
+                                    color = GeoOrange
                                 )
                             )
                             Row(
@@ -198,7 +202,7 @@ fun Explorer3DScreen(
                                     text = if (showTranslation) selectedShape.nameEs else selectedShape.nameEn,
                                     style = MaterialTheme.typography.titleMedium.copy(
                                         fontWeight = FontWeight.SemiBold,
-                                        color = Color(0xFF1A1C1E)
+                                        color = GeoNavy
                                     )
                                 )
                                 IconButton(
@@ -214,7 +218,7 @@ fun Explorer3DScreen(
                                     Icon(
                                         imageVector = Icons.Default.Translate,
                                         contentDescription = if (isSpanish) "Traducir" else "Translate",
-                                        tint = Color(0xFF2563EB),
+                                        tint = GeoOrange,
                                         modifier = Modifier.size(18.dp)
                                     )
                                 }
@@ -223,7 +227,7 @@ fun Explorer3DScreen(
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
                         contentDescription = "Select shape",
-                        tint = Color(0xFF1A1C1E),
+                        tint = GeoNavy,
                         modifier = Modifier.size(30.dp)
                     )
                 }
@@ -233,7 +237,7 @@ fun Explorer3DScreen(
                     onDismissRequest = { dropdownExpanded = false },
                     modifier = Modifier
                         .background(Color.White)
-                        .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(12.dp))
+                        .border(1.dp, GeoMintBorder, RoundedCornerShape(12.dp))
                 ) {
                     shapes.forEach { shape ->
                         DropdownMenuItem(
@@ -242,7 +246,7 @@ fun Explorer3DScreen(
                                     text = if (isSpanish) shape.nameEs else shape.nameEn,
                                     fontWeight = if (selectedShape == shape) FontWeight.SemiBold else FontWeight.Medium,
                                     fontSize = 16.sp,
-                                    color = if (selectedShape == shape) Color(0xFF2563EB) else Color(0xFF1A1C1E)
+                                    color = if (selectedShape == shape) GeoOrange else GeoNavy
                                 )
                             },
                             onClick = {
@@ -261,7 +265,7 @@ fun Explorer3DScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(300.dp)
-                .border(2.dp, Color(0xFFEFF6FF), RoundedCornerShape(24.dp)),
+                .border(2.dp, GeoMint, RoundedCornerShape(24.dp)),
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -284,7 +288,7 @@ fun Explorer3DScreen(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(24.dp)),
+                .border(1.dp, GeoMintBorder, RoundedCornerShape(24.dp)),
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -294,26 +298,13 @@ fun Explorer3DScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
-                ) {
-                    Text(
-                        text = if (isSpanish) "Datos de la Figura" else "Shape Statistics",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF1A1C1E)
-                        )
+                Text(
+                    text = if (isSpanish) "Elementos" else "Elements",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        color = GeoNavy
                     )
-                    Text(
-                        text = if (isSpanish) "Toca cada botón para mostrar u ocultar" else "Tap each button to show or hide",
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 12.sp
-                        ),
-                        color = Color(0xFF64748B)
-                    )
-                }
+                )
 
                 // Interactive Stats Toggle Counters
                 Row(
@@ -374,28 +365,20 @@ fun Explorer3DScreen(
                 }
 
                 // Friendly description box
-                Row(
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFFF8FAFC), RoundedCornerShape(16.dp))
-                        .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(16.dp))
-                        .padding(12.dp),
-                    verticalAlignment = Alignment.Top,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        .background(GeoMintCard, RoundedCornerShape(16.dp))
+                        .border(1.dp, GeoMint, RoundedCornerShape(16.dp))
+                        .padding(12.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Info,
-                        contentDescription = "Info",
-                        tint = Color(0xFF2563EB),
-                        modifier = Modifier.size(24.dp)
-                    )
                     Text(
                         text = if (isSpanish) selectedShape.descriptionEs else selectedShape.descriptionEn,
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.Normal,
                             lineHeight = 20.sp
                         ),
-                        color = Color(0xFF374151)
+                        color = GeoNavy
                     )
                 }
             }
@@ -452,7 +435,7 @@ fun Explorer3DScreen(
                 Button(
                     onClick = onDismissHelpDialog,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF3B82F6),
+                        containerColor = GeoOrange,
                         contentColor = Color(0xFFFFFFFF)
                     ),
                     shape = RoundedCornerShape(12.dp)
@@ -498,7 +481,7 @@ fun StatCounter(
         label = "stat_primary_content_color"
     )
     val secondaryContentColor by animateColorAsState(
-        targetValue = if (isSelected) Color(0xFF374151) else Color(0xFF475569),
+        targetValue = if (isSelected) GeoNavy else Color(0xFF475569),
         label = "stat_secondary_content_color"
     )
 

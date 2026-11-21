@@ -38,6 +38,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ui.theme.GeoMint
+import com.example.ui.theme.GeoMintBorder
+import com.example.ui.theme.GeoMintCard
+import com.example.ui.theme.GeoMintSurface
+import com.example.ui.theme.GeoNavy
+import com.example.ui.theme.GeoNavyMuted
+import com.example.ui.theme.GeoOrange
 
 data class Flashcard(
     val id: Int,
@@ -179,8 +186,7 @@ fun FlashcardsScreen(
     var currentIndex by remember { mutableStateOf(0) }
     var isFlipped by remember { mutableStateOf(false) }
 
-    // Solid high-contrast Slate-light background
-    val backgroundColor = Color(0xFFF7F9FC)
+    val backgroundColor = GeoMintSurface
 
     // Current flashcard
     val card = flashcards[currentIndex]
@@ -209,7 +215,7 @@ fun FlashcardsScreen(
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 24.sp
                 ),
-                color = Color(0xFF1A1C1E)
+                color = GeoNavy
             )
             Text(
                 text = if (isSpanish) "¡Toca la tarjeta para ver la respuesta secreta!" else "Tap the card to reveal the secret answer!",
@@ -217,7 +223,7 @@ fun FlashcardsScreen(
                     fontWeight = FontWeight.Normal,
                     fontSize = 13.sp
                 ),
-                color = Color(0xFF74777F)
+                color = GeoNavyMuted
             )
         }
 
@@ -226,11 +232,11 @@ fun FlashcardsScreen(
             text = "${currentIndex + 1} / ${flashcards.size}",
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF2563EB)
+                color = GeoNavy
             ),
             modifier = Modifier
-                .background(Color.White, RoundedCornerShape(12.dp))
-                .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(12.dp))
+                .background(GeoMint, RoundedCornerShape(12.dp))
+                .border(1.dp, GeoMintBorder, RoundedCornerShape(12.dp))
                 .padding(horizontal = 16.dp, vertical = 6.dp)
         )
 
@@ -287,7 +293,7 @@ fun FlashcardsScreen(
                         Icon(
                             imageVector = Icons.Default.Translate,
                             contentDescription = if (isSpanish) "Traducir" else "Translate",
-                            tint = Color(0xFF2563EB),
+                            tint = GeoOrange,
                             modifier = Modifier.size(22.dp)
                         )
                     }
@@ -320,14 +326,14 @@ fun FlashcardsScreen(
                     .weight(1f)
                     .height(56.dp)
                     .border(
-                        width = 1.dp,
-                        color = if (currentIndex > 0) Color(0xFFE2E8F0) else Color.Transparent,
+                        width = 1.5.dp,
+                        color = if (currentIndex > 0) GeoNavy else Color.Transparent,
                         shape = RoundedCornerShape(16.dp)
                     )
                     .testTag("prev_button"),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.White,
-                    disabledContainerColor = Color(0xFFF3F4F6)
+                    disabledContainerColor = GeoMintCard
                 ),
                 shape = RoundedCornerShape(16.dp),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
@@ -335,7 +341,7 @@ fun FlashcardsScreen(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Previous",
-                    tint = if (currentIndex > 0) Color(0xFF2563EB) else Color.Gray,
+                    tint = if (currentIndex > 0) GeoNavy else GeoNavyMuted.copy(alpha = 0.5f),
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(6.dp))
@@ -343,7 +349,7 @@ fun FlashcardsScreen(
                     text = if (isSpanish) "Anterior" else "Back",
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp,
-                    color = if (currentIndex > 0) Color(0xFF2563EB) else Color.Gray
+                    color = if (currentIndex > 0) GeoNavy else GeoNavyMuted.copy(alpha = 0.5f)
                 )
             }
 
@@ -360,8 +366,8 @@ fun FlashcardsScreen(
                     .height(56.dp)
                     .testTag("next_button"),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF2563EB),
-                    disabledContainerColor = Color(0xFFF3F4F6)
+                    containerColor = GeoOrange,
+                    disabledContainerColor = GeoMintCard
                 ),
                 shape = RoundedCornerShape(16.dp),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
@@ -370,13 +376,13 @@ fun FlashcardsScreen(
                     text = if (isSpanish) "Siguiente" else "Next",
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp,
-                    color = if (currentIndex < flashcards.size - 1) Color.White else Color.Gray
+                    color = if (currentIndex < flashcards.size - 1) Color.White else GeoNavyMuted.copy(alpha = 0.5f)
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = "Next",
-                    tint = if (currentIndex < flashcards.size - 1) Color.White else Color.Gray,
+                    tint = if (currentIndex < flashcards.size - 1) Color.White else GeoNavyMuted.copy(alpha = 0.5f),
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -499,7 +505,7 @@ fun CardSideContent(
                     fontSize = if (isBack) 30.sp else 20.sp,
                     lineHeight = if (isBack) 36.sp else 28.sp
                 ),
-                color = Color(0xFF1F2937),
+                color = GeoNavy,
                 textAlign = TextAlign.Center
             )
 

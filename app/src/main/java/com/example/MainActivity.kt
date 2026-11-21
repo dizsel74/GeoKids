@@ -45,6 +45,13 @@ import com.example.ui.screens.DictionaryScreen
 import com.example.ui.screens.Explorer3DScreen
 import com.example.ui.screens.FlashcardsScreen
 import com.example.ui.screens.QuizScreen
+import com.example.ui.theme.GeoMint
+import com.example.ui.theme.GeoMintBorder
+import com.example.ui.theme.GeoMintCard
+import com.example.ui.theme.GeoMintSurface
+import com.example.ui.theme.GeoNavy
+import com.example.ui.theme.GeoNavyMuted
+import com.example.ui.theme.GeoOrange
 import com.example.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
@@ -103,7 +110,7 @@ fun MainAppLayout() {
                             text = topBarTitle,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 20.sp,
-                            color = Color(0xFF1A1C1E)
+                            color = GeoNavy
                         )
                         if (topBarSubtitle != null) {
                             Text(
@@ -113,7 +120,7 @@ fun MainAppLayout() {
                                 lineHeight = 15.sp,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
-                                color = Color(0xFF74777F)
+                                color = GeoNavyMuted
                             )
                         }
                     }
@@ -129,7 +136,7 @@ fun MainAppLayout() {
                             Icon(
                                 imageVector = Icons.Outlined.HelpOutline,
                                 contentDescription = if (isSpanish) "Ayuda" else "Help",
-                                tint = Color(0xFF1A1C1E),
+                                tint = GeoNavy,
                                 modifier = Modifier.size(24.dp)
                             )
                         }
@@ -145,7 +152,7 @@ fun MainAppLayout() {
                         Icon(
                             imageVector = Icons.Outlined.EmojiEvents,
                             contentDescription = if (isSpanish) "Mis Logros" else "Achievements",
-                            tint = Color(0xFF1A1C1E),
+                            tint = GeoNavy,
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -153,17 +160,25 @@ fun MainAppLayout() {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.White
                 ),
-                modifier = Modifier.border(width = 1.dp, color = Color(0xFFE2E8F0))
+                modifier = Modifier.border(width = 1.dp, color = GeoMintBorder)
             )
         },
         bottomBar = {
             NavigationBar(
-                containerColor = Color(0xFFF3F4F9),
-                tonalElevation = 8.dp,
+                containerColor = Color.White,
+                tonalElevation = 4.dp,
                 modifier = Modifier
-                    .border(width = 1.dp, color = Color(0xFFE2E8F0))
+                    .border(width = 1.dp, color = GeoMintBorder)
                     .testTag("bottom_nav_bar")
             ) {
+                val navItemColors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = GeoNavy,
+                    selectedTextColor = GeoNavy,
+                    indicatorColor = GeoMint,
+                    unselectedIconColor = GeoNavyMuted,
+                    unselectedTextColor = GeoNavyMuted
+                )
+
                 // Tab 1: 3D Shapes
                 NavigationBarItem(
                     selected = selectedTab == "explorer",
@@ -183,13 +198,7 @@ fun MainAppLayout() {
                             overflow = TextOverflow.Ellipsis
                         )
                     },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Color(0xFF2563EB),
-                        selectedTextColor = Color(0xFF2563EB),
-                        indicatorColor = Color(0xFFDBEAFE),
-                        unselectedIconColor = Color(0xFF74777F),
-                        unselectedTextColor = Color(0xFF74777F)
-                    ),
+                    colors = navItemColors,
                     modifier = Modifier.testTag("tab_explorer")
                 )
 
@@ -212,13 +221,7 @@ fun MainAppLayout() {
                             overflow = TextOverflow.Ellipsis
                         )
                     },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Color(0xFF059669),
-                        selectedTextColor = Color(0xFF059669),
-                        indicatorColor = Color(0xFFD1FAE5),
-                        unselectedIconColor = Color(0xFF74777F),
-                        unselectedTextColor = Color(0xFF74777F)
-                    ),
+                    colors = navItemColors,
                     modifier = Modifier.testTag("tab_dictionary")
                 )
 
@@ -247,13 +250,7 @@ fun MainAppLayout() {
                             overflow = TextOverflow.Ellipsis
                         )
                     },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Color(0xFFD97706),
-                        selectedTextColor = Color(0xFFD97706),
-                        indicatorColor = Color(0xFFFEF3C7),
-                        unselectedIconColor = Color(0xFF74777F),
-                        unselectedTextColor = Color(0xFF74777F)
-                    ),
+                    colors = navItemColors,
                     modifier = Modifier.testTag("tab_flashcards")
                 )
 
@@ -276,13 +273,7 @@ fun MainAppLayout() {
                             overflow = TextOverflow.Ellipsis
                         )
                     },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Color(0xFF7C3AED),
-                        selectedTextColor = Color(0xFF7C3AED),
-                        indicatorColor = Color(0xFFEDE9FE),
-                        unselectedIconColor = Color(0xFF74777F),
-                        unselectedTextColor = Color(0xFF74777F)
-                    ),
+                    colors = navItemColors,
                     modifier = Modifier.testTag("tab_quiz")
                 )
             }
@@ -292,7 +283,7 @@ fun MainAppLayout() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            color = Color(0xFFF7F9FC)
+            color = GeoMintSurface
         ) {
             when (selectedTab) {
                 "explorer" -> Explorer3DScreen(
@@ -316,15 +307,19 @@ fun AchievementsDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(
+            Button(
                 onClick = onDismiss,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = GeoOrange,
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.testTag("dismiss_achievements_button")
             ) {
                 Text(
                     text = if (isSpanish) "¡Excelente!" else "Awesome!",
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 15.sp,
-                    color = Color(0xFF2563EB)
+                    fontSize = 15.sp
                 )
             }
         },
@@ -338,7 +333,7 @@ fun AchievementsDialog(
                 Icon(
                     imageVector = Icons.Default.Refresh,
                     contentDescription = null,
-                    tint = Color(0xFFEF4444),
+                    tint = GeoNavyMuted,
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
@@ -346,7 +341,7 @@ fun AchievementsDialog(
                     text = if (isSpanish) "Reiniciar" else "Reset",
                     fontWeight = FontWeight.Medium,
                     fontSize = 14.sp,
-                    color = Color(0xFFEF4444)
+                    color = GeoNavyMuted
                 )
             }
         },
@@ -359,7 +354,7 @@ fun AchievementsDialog(
                 Icon(
                     imageVector = Icons.Outlined.EmojiEvents,
                     contentDescription = null,
-                    tint = Color(0xFF1A1C1E),
+                    tint = GeoOrange,
                     modifier = Modifier.size(26.dp)
                 )
                 Text(
@@ -368,7 +363,7 @@ fun AchievementsDialog(
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 22.sp
                     ),
-                    color = Color(0xFF1A1C1E)
+                    color = GeoNavy
                 )
             }
         },
@@ -392,9 +387,9 @@ fun AchievementsDialog(
             ) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF8FAFC)),
+                    colors = CardDefaults.cardColors(containerColor = GeoMintCard),
                     shape = RoundedCornerShape(16.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE2E8F0))
+                    border = androidx.compose.foundation.BorderStroke(1.dp, GeoMint)
                 ) {
                     Column(
                         modifier = Modifier.padding(12.dp),
@@ -403,7 +398,7 @@ fun AchievementsDialog(
                         Text(
                             text = if (isSpanish) "¡Llevas $unlockedCount de 4 insignias!" else "You have $unlockedCount of 4 badges!",
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                            color = Color(0xFF2563EB)
+                            color = GeoNavy
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         LinearProgressIndicator(
@@ -411,9 +406,9 @@ fun AchievementsDialog(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(12.dp)
-                                .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(6.dp)),
-                            color = Color(0xFF10B981),
-                            trackColor = Color(0xFFE2E8F0),
+                                .border(1.dp, GeoMintBorder, RoundedCornerShape(6.dp)),
+                            color = GeoOrange,
+                            trackColor = Color.White,
                             strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
                         )
                     }
@@ -529,13 +524,13 @@ fun AchievementCard(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
-                    color = if (isUnlocked) Color(0xFF1A1C1E) else Color(0xFF64748B)
+                    color = if (isUnlocked) GeoNavy else GeoNavyMuted
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = if (isUnlocked) desc else req,
                     style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Normal),
-                    color = if (isUnlocked) Color(0xFF374151) else Color(0xFF94A3B8)
+                    color = if (isUnlocked) GeoNavyMuted else Color(0xFF94A3B8)
                 )
             }
         }

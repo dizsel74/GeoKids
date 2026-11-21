@@ -29,6 +29,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ui.theme.GeoMint
+import com.example.ui.theme.GeoMintBorder
+import com.example.ui.theme.GeoMintCard
+import com.example.ui.theme.GeoMintSurface
+import com.example.ui.theme.GeoNavy
+import com.example.ui.theme.GeoNavyMuted
+import com.example.ui.theme.GeoOrange
 
 sealed class ProgressionData(
     val id: String,
@@ -262,7 +269,7 @@ fun DictionaryScreen(
         }
     }
 
-    val backgroundColor = Color(0xFFF7F9FC)
+    val backgroundColor = GeoMintSurface
 
     Column(
         modifier = modifier
@@ -280,7 +287,7 @@ fun DictionaryScreen(
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 24.sp
                 ),
-                color = Color(0xFF1A1C1E)
+                color = GeoNavy
             )
             Text(
                 text = if (isSpanish) "Explora la estructura técnica de los polígonos y la magia de los cuerpos 3D." 
@@ -289,7 +296,7 @@ fun DictionaryScreen(
                     fontWeight = FontWeight.Normal,
                     fontSize = 13.sp
                 ),
-                color = Color(0xFF74777F)
+                color = GeoNavyMuted
             )
         }
 
@@ -297,15 +304,16 @@ fun DictionaryScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFFE2E8F0), RoundedCornerShape(16.dp))
+                .background(GeoMintCard, RoundedCornerShape(16.dp))
+                .border(1.dp, GeoMint, RoundedCornerShape(16.dp))
                 .padding(4.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Button(
                 onClick = { activeSubTab = "2d_polygons" },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (activeSubTab == "2d_polygons") Color.White else Color.Transparent,
-                    contentColor = if (activeSubTab == "2d_polygons") Color(0xFF2563EB) else Color(0xFF475569)
+                    containerColor = if (activeSubTab == "2d_polygons") GeoOrange else Color.Transparent,
+                    contentColor = if (activeSubTab == "2d_polygons") Color.White else GeoNavy
                 ),
                 elevation = if (activeSubTab == "2d_polygons") ButtonDefaults.buttonElevation(defaultElevation = 2.dp) else null,
                 shape = RoundedCornerShape(12.dp),
@@ -321,8 +329,8 @@ fun DictionaryScreen(
             Button(
                 onClick = { activeSubTab = "2d_to_3d" },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (activeSubTab == "2d_to_3d") Color.White else Color.Transparent,
-                    contentColor = if (activeSubTab == "2d_to_3d") Color(0xFF2563EB) else Color(0xFF475569)
+                    containerColor = if (activeSubTab == "2d_to_3d") GeoOrange else Color.Transparent,
+                    contentColor = if (activeSubTab == "2d_to_3d") Color.White else GeoNavy
                 ),
                 elevation = if (activeSubTab == "2d_to_3d") ButtonDefaults.buttonElevation(defaultElevation = 2.dp) else null,
                 shape = RoundedCornerShape(12.dp),
@@ -355,7 +363,7 @@ fun DictionaryScreen(
                             text = categoryName,
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.SemiBold,
-                                color = Color(0xFF1E3A8A)
+                                color = GeoNavy
                             ),
                             modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
                         )
@@ -381,7 +389,7 @@ fun DictionaryCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(20.dp))
+            .border(1.dp, GeoMintBorder, RoundedCornerShape(20.dp))
             .clickable {
                 com.example.ui.TtsManager.speak(item.solidEn)
             }
@@ -412,7 +420,7 @@ fun DictionaryCard(
                         text = if (isSpanish) "2D Plano" else "2D Flat",
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontWeight = FontWeight.Medium,
-                            color = Color(0xFF74777F)
+                            color = GeoNavyMuted
                         )
                     )
                     Spacer(modifier = Modifier.height(4.dp))
@@ -431,7 +439,7 @@ fun DictionaryCard(
                             text = if (isSpanish) item.flatEn else item.flatEs,
                             style = MaterialTheme.typography.bodySmall.copy(
                                 fontWeight = FontWeight.Normal,
-                                color = Color(0xFF64748B)
+                                color = GeoNavyMuted
                             ),
                             textAlign = TextAlign.Center
                         )
@@ -469,7 +477,7 @@ fun DictionaryCard(
                         text = if (isSpanish) "3D Sólido" else "3D Solid",
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontWeight = FontWeight.Medium,
-                            color = Color(0xFF74777F)
+                            color = GeoNavyMuted
                         )
                     )
                     Spacer(modifier = Modifier.height(4.dp))
@@ -488,7 +496,7 @@ fun DictionaryCard(
                             text = if (isSpanish) item.solidEn else item.solidEs,
                             style = MaterialTheme.typography.bodySmall.copy(
                                 fontWeight = FontWeight.Normal,
-                                color = Color(0xFF64748B)
+                                color = GeoNavyMuted
                             ),
                             textAlign = TextAlign.Center
                         )
@@ -500,8 +508,8 @@ fun DictionaryCard(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFFF8FAFC), RoundedCornerShape(14.dp))
-                    .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(14.dp))
+                    .background(GeoMintCard, RoundedCornerShape(14.dp))
+                    .border(1.dp, GeoMint, RoundedCornerShape(14.dp))
                     .padding(12.dp)
             ) {
                 Row(
@@ -511,14 +519,14 @@ fun DictionaryCard(
                     Icon(
                         imageVector = Icons.Default.Lightbulb,
                         contentDescription = null,
-                        tint = Color(0xFFF59E0B),
+                        tint = GeoOrange,
                         modifier = Modifier.size(16.dp)
                     )
                     Text(
                         text = if (isSpanish) "¿Cómo se forma?" else "How is it made?",
                         style = MaterialTheme.typography.labelMedium.copy(
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF1A1C1E)
+                            color = GeoNavy
                         )
                     )
                 }
@@ -529,7 +537,7 @@ fun DictionaryCard(
                         fontWeight = FontWeight.Normal,
                         lineHeight = 18.sp
                     ),
-                    color = Color(0xFF374151)
+                    color = GeoNavy
                 )
             }
         }
@@ -823,7 +831,7 @@ fun Polygon2DCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(20.dp))
+            .border(1.dp, GeoMintBorder, RoundedCornerShape(20.dp))
             .clickable {
                 com.example.ui.TtsManager.speak(shape.nameEn)
             }
@@ -863,7 +871,7 @@ fun Polygon2DCard(
                         text = if (showTranslation) shape.nameEs else shape.nameEn,
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF1E3A8A)
+                            color = GeoNavy
                         )
                     )
                     
@@ -881,7 +889,7 @@ fun Polygon2DCard(
                         Icon(
                             imageVector = Icons.Default.Translate,
                             contentDescription = if (isSpanish) "Traducir" else "Translate",
-                            tint = Color(0xFF2563EB),
+                            tint = GeoOrange,
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -893,7 +901,7 @@ fun Polygon2DCard(
                         fontWeight = FontWeight.Normal,
                         lineHeight = 17.sp
                     ),
-                    color = Color(0xFF475569)
+                    color = GeoNavyMuted
                 )
             }
         }

@@ -35,6 +35,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ui.theme.GeoMint
+import com.example.ui.theme.GeoMintBorder
+import com.example.ui.theme.GeoMintCard
+import com.example.ui.theme.GeoMintSurface
+import com.example.ui.theme.GeoNavy
+import com.example.ui.theme.GeoNavyMuted
+import com.example.ui.theme.GeoOrange
 
 data class QuizQuestion(
     val id: Int,
@@ -173,8 +180,7 @@ fun QuizScreen(
 
     val scrollState = rememberScrollState()
 
-    // Solid high-contrast Slate-light background
-    val backgroundColor = Color(0xFFF7F9FC)
+    val backgroundColor = GeoMintSurface
 
     Column(
         modifier = modifier
@@ -200,16 +206,16 @@ fun QuizScreen(
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 24.sp
                     ),
-                    color = Color(0xFF1A1C1E)
+                    color = GeoNavy
                 )
 
                 Text(
                     text = "${currentQuestionIndex + 1} / ${questions.size}",
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                    color = Color(0xFF2563EB),
+                    color = GeoNavy,
                     modifier = Modifier
-                        .background(Color.White, RoundedCornerShape(12.dp))
-                        .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(12.dp))
+                        .background(GeoMint, RoundedCornerShape(12.dp))
+                        .border(1.dp, GeoMintBorder, RoundedCornerShape(12.dp))
                         .padding(horizontal = 14.dp, vertical = 6.dp)
                 )
             }
@@ -220,9 +226,9 @@ fun QuizScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(8.dp)
-                    .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(4.dp)),
-                color = Color(0xFF2563EB),
-                trackColor = Color(0xFFE2E8F0),
+                    .border(1.dp, GeoMintBorder, RoundedCornerShape(4.dp)),
+                color = GeoOrange,
+                trackColor = GeoMintCard,
                 strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
             )
 
@@ -230,7 +236,7 @@ fun QuizScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(20.dp)),
+                    .border(1.dp, GeoMintBorder, RoundedCornerShape(20.dp)),
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
                 elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
@@ -246,7 +252,7 @@ fun QuizScreen(
                             fontWeight = FontWeight.Medium,
                             letterSpacing = 1.5.sp
                         ),
-                        color = Color(0xFF2563EB)
+                        color = GeoOrange
                     )
 
                     Text(
@@ -256,7 +262,7 @@ fun QuizScreen(
                             fontSize = 19.sp,
                             lineHeight = 25.sp
                         ),
-                        color = Color(0xFF1A1C1E),
+                        color = GeoNavy,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -275,22 +281,22 @@ fun QuizScreen(
                     val cardContainerColor = when {
                         isAnswerSubmitted && isCorrect -> Color(0xFFECFDF5) // Correct highlight (green)
                         isAnswerSubmitted && isSelected && !isCorrect -> Color(0xFFFEF2F2) // Wrong highlight (red)
-                        isSelected -> Color(0xFFEFF6FF) // Simple selected highlight (light blue)
+                        isSelected -> GeoMintCard // Selected highlight (soft mint)
                         else -> Color.White
                     }
 
                     val cardBorderColor = when {
                         isAnswerSubmitted && isCorrect -> Color(0xFF10B981) // Green border
                         isAnswerSubmitted && isSelected && !isCorrect -> Color(0xFFEF4444) // Red border
-                        isSelected -> Color(0xFF2563EB) // Blue border
-                        else -> Color(0xFFE2E8F0) // Gray border
+                        isSelected -> GeoNavy // Navy border
+                        else -> GeoMintBorder // Mint border
                     }
 
                     val textColor = when {
                         isAnswerSubmitted && isCorrect -> Color(0xFF047857)
                         isAnswerSubmitted && isSelected && !isCorrect -> Color(0xFFB91C1C)
-                        isSelected -> Color(0xFF1E40AF)
-                        else -> Color(0xFF1A1C1E)
+                        isSelected -> GeoNavy
+                        else -> GeoNavy
                     }
 
                     Card(
@@ -355,9 +361,9 @@ fun QuizScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.5.dp, Color(0xFFE2E8F0), RoundedCornerShape(16.dp)),
+                        .border(1.5.dp, GeoMint, RoundedCornerShape(16.dp)),
                     shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF8FAFC))
+                    colors = CardDefaults.cardColors(containerColor = GeoMintCard)
                 ) {
                     Column(
                         modifier = Modifier.padding(14.dp),
@@ -371,7 +377,7 @@ fun QuizScreen(
                             Icon(
                                 imageVector = if (isUserCorrect) Icons.Default.CheckCircle else Icons.Default.Lightbulb,
                                 contentDescription = null,
-                                tint = if (isUserCorrect) Color(0xFF047857) else Color(0xFFD97706),
+                                tint = if (isUserCorrect) Color(0xFF047857) else GeoOrange,
                                 modifier = Modifier.size(18.dp)
                             )
                             Text(
@@ -382,13 +388,13 @@ fun QuizScreen(
                                 },
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 16.sp,
-                                color = if (isUserCorrect) Color(0xFF047857) else Color(0xFFD97706)
+                                color = if (isUserCorrect) Color(0xFF047857) else GeoOrange
                             )
                         }
                         Text(
                             text = if (isSpanish) question.explanationEs else question.explanationEn,
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Normal),
-                            color = Color(0xFF475569)
+                            color = GeoNavy
                         )
                     }
                 }
@@ -425,8 +431,8 @@ fun QuizScreen(
                     .height(56.dp)
                     .testTag("quiz_action_button"),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF2563EB),
-                    disabledContainerColor = Color(0xFFCBD5E1)
+                    containerColor = GeoOrange,
+                    disabledContainerColor = GeoMintCard
                 ),
                 shape = RoundedCornerShape(16.dp),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
@@ -438,7 +444,7 @@ fun QuizScreen(
                 } else {
                     if (isSpanish) "Ver Resultados" else "View Results"
                 }
-                val actionTint = if (selectedAnswerIndex != null) Color.White else Color(0xFF64748B)
+                val actionTint = if (selectedAnswerIndex != null) Color.White else GeoNavyMuted
                 Text(
                     text = actionText,
                     fontWeight = FontWeight.SemiBold,
@@ -466,7 +472,7 @@ fun QuizScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 24.dp)
-                    .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(24.dp))
+                    .border(1.dp, GeoMintBorder, RoundedCornerShape(24.dp))
                     .testTag("results_card"),
                 shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -485,14 +491,14 @@ fun QuizScreen(
                         Canvas(modifier = Modifier.fillMaxSize()) {
                             // Celebrate drawing background circles
                             drawCircle(
-                                color = Color(0xFFFEF3C7),
+                                color = GeoMint,
                                 radius = size.minDimension / 2
                             )
                         }
                         Icon(
                             imageVector = Icons.Default.Star,
                             contentDescription = "Star",
-                            tint = Color(0xFFF59E0B),
+                            tint = GeoOrange,
                             modifier = Modifier.size(64.dp)
                         )
                     }
@@ -504,7 +510,7 @@ fun QuizScreen(
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 30.sp
                         ),
-                        color = Color(0xFF1A1C1E),
+                        color = GeoNavy,
                         textAlign = TextAlign.Center
                     )
 
@@ -515,7 +521,7 @@ fun QuizScreen(
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 54.sp
                         ),
-                        color = Color(0xFF2563EB),
+                        color = GeoOrange,
                         textAlign = TextAlign.Center
                     )
 
@@ -531,7 +537,7 @@ fun QuizScreen(
                             fontWeight = FontWeight.Normal,
                             fontSize = 16.sp
                         ),
-                        color = Color(0xFF374151),
+                        color = GeoNavy,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
@@ -546,13 +552,13 @@ fun QuizScreen(
                         Icon(
                             imageVector = Icons.Outlined.EmojiEvents,
                             contentDescription = null,
-                            tint = Color(0xFF1A1C1E),
+                            tint = GeoOrange,
                             modifier = Modifier.size(22.dp)
                         )
                         Text(
                             text = if (isSpanish) "Tus Insignias de la Sesión" else "Your Session Badges",
                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                            color = Color(0xFF1A1C1E)
+                            color = GeoNavy
                         )
                     }
 
@@ -615,13 +621,17 @@ fun QuizScreen(
                             .fillMaxWidth()
                             .height(56.dp)
                             .testTag("restart_button"),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = GeoOrange,
+                            contentColor = Color.White
+                        ),
                         shape = RoundedCornerShape(16.dp),
                         elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Refresh,
                             contentDescription = "Reiniciar",
+                            tint = Color.White,
                             modifier = Modifier.size(24.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -654,12 +664,12 @@ fun ResultsBadgeItem(
             modifier = Modifier
                 .size(60.dp)
                 .background(
-                    if (isUnlocked) color.copy(alpha = 0.18f) else Color(0xFFF1F5F9),
+                    if (isUnlocked) color.copy(alpha = 0.18f) else GeoMintSurface,
                     RoundedCornerShape(30.dp)
                 )
                 .border(
                     width = if (isUnlocked) 2.dp else 1.dp,
-                    color = if (isUnlocked) color else Color(0xFFE2E8F0),
+                    color = if (isUnlocked) color else GeoMintBorder,
                     shape = RoundedCornerShape(30.dp)
                 ),
             contentAlignment = Alignment.Center
@@ -667,7 +677,7 @@ fun ResultsBadgeItem(
             Icon(
                 imageVector = icon,
                 contentDescription = title,
-                tint = if (isUnlocked) color else Color(0xFF94A3B8),
+                tint = if (isUnlocked) color else GeoNavyMuted.copy(alpha = 0.6f),
                 modifier = Modifier.size(28.dp)
             )
             if (!isUnlocked) {
@@ -675,14 +685,14 @@ fun ResultsBadgeItem(
                     modifier = Modifier
                         .size(18.dp)
                         .background(Color.White, RoundedCornerShape(9.dp))
-                        .border(1.dp, Color(0xFF94A3B8), RoundedCornerShape(9.dp))
+                        .border(1.dp, GeoNavyMuted, RoundedCornerShape(9.dp))
                         .align(Alignment.BottomEnd),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.Lock,
                         contentDescription = "Locked",
-                        tint = Color(0xFF64748B),
+                        tint = GeoNavyMuted,
                         modifier = Modifier.size(11.dp)
                     )
                 }
@@ -693,7 +703,7 @@ fun ResultsBadgeItem(
             text = title,
             fontWeight = FontWeight.Medium,
             fontSize = 11.sp,
-            color = if (isUnlocked) Color(0xFF1A1C1E) else Color(0xFF94A3B8)
+            color = if (isUnlocked) GeoNavy else GeoNavyMuted
         )
     }
 }
