@@ -196,19 +196,21 @@ fun QuizScreen(
         if (!quizCompleted) {
             val question = questions[currentQuestionIndex]
 
-            // Question Section Header
+            // Progress Bar + Question Counter in the same row
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = if (isSpanish) "Prueba Rápida" else "Exit Ticket",
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 24.sp
-                    ),
-                    color = GeoNavy
+                LinearProgressIndicator(
+                    progress = { (currentQuestionIndex + 1).toFloat() / questions.size },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(10.dp)
+                        .border(1.dp, GeoMintBorder, RoundedCornerShape(5.dp)),
+                    color = GeoOrange,
+                    trackColor = GeoMintCard,
+                    strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
                 )
 
                 Text(
@@ -221,18 +223,6 @@ fun QuizScreen(
                         .padding(horizontal = 14.dp, vertical = 6.dp)
                 )
             }
-
-            // Progress Bar
-            LinearProgressIndicator(
-                progress = { (currentQuestionIndex + 1).toFloat() / questions.size },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(8.dp)
-                    .border(1.dp, GeoMintBorder, RoundedCornerShape(4.dp)),
-                color = GeoOrange,
-                trackColor = GeoMintCard,
-                strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
-            )
 
             // Question Card
             Card(

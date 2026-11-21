@@ -499,6 +499,19 @@ private fun getHtmlContent(): String {
                         var edgesGeo = new THREE.BufferGeometry();
                         edgesGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
                         addThickEdges(edgesGeo.attributes.position.array);
+                    } else if (currentShape === 'cone') {
+                        geometry = new THREE.ConeGeometry(0.6, 1.3, 32, 1, false);
+                        currentMesh = new THREE.Mesh(geometry, meshMaterial);
+                        scene.add(currentMesh);
+
+                        // Cone has 1 vertex at the top apex
+                        vertexPositions = [
+                            new THREE.Vector3(0, 0.65, 0)
+                        ];
+
+                        // Only the circular base rim edge
+                        var edgesGeo = new THREE.EdgesGeometry(geometry, 30);
+                        addThickEdges(edgesGeo.attributes.position.array);
                     } else if (currentShape === 'cylinder') {
                         geometry = new THREE.CylinderGeometry(0.5, 0.5, 1.2, 24, 1, false);
                         currentMesh = new THREE.Mesh(geometry, meshMaterial);
@@ -704,7 +717,31 @@ private fun getHtmlContent(): String {
                                 {indices: [6, 7, 15, 14], normal: {x: Math.cos(13*Math.PI/8), y: 0, z: Math.sin(13*Math.PI/8)}},
                                 {indices: [7, 0, 8, 15], normal: {x: Math.cos(15*Math.PI/8), y: 0, z: Math.sin(15*Math.PI/8)}}
                             ]
-                        }
+                        },
+                        cone: (function() {
+                            var segs = 12;
+                            var verts = [];
+                            var edges = [];
+                            var faces = [];
+                            var baseIndices = [];
+                            for (var k = 0; k < segs; k++) {
+                                var a = (k * 2 * Math.PI) / segs;
+                                verts.push({ x: 0.6 * Math.cos(a), y: -0.65, z: 0.6 * Math.sin(a) });
+                                edges.push([k, (k + 1) % segs]);
+                                baseIndices.unshift(k);
+                            }
+                            var apexIdx = segs;
+                            verts.push({ x: 0.0, y: 0.65, z: 0.0 });
+                            faces.push({ indices: baseIndices, normal: { x: 0, y: -1, z: 0 } });
+                            for (var k = 0; k < segs; k++) {
+                                var mid = ((k + 0.5) * 2 * Math.PI) / segs;
+                                faces.push({
+                                    indices: [k, (k + 1) % segs, apexIdx],
+                                    normal: { x: 0.91 * Math.cos(mid), y: 0.42, z: 0.91 * Math.sin(mid) }
+                                });
+                            }
+                            return { vertices: verts, edges: edges, faces: faces };
+                        })()
                     };
 
                     // Function to rotate a 3D point around Y then X
@@ -856,7 +893,9 @@ private fun getHtmlContent(): String {
                         // Draw Vertices (Highlight corners with bright orange/red spheres)
                         if (config.showVertices && currentShape !== 'cylinder') {
                             // Depth-sort vertices so back vertices look smaller or are drawn behind
-                            var sortedVertices = transformedVertices.slice();
+                            var sortedVertices = (currentShape === 'cone')
+                                ? [transformedVertices[transformedVertices.length - 1]]
+                                : transformedVertices.slice();
                             sortedVertices.sort(function(a, b) {
                                 return a.rot.z - b.rot.z;
                             });

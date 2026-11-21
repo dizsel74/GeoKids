@@ -108,6 +108,17 @@ sealed class GeometricShape(
         descriptionEn = "It has a triangular base at the bottom and 3 triangular sides! It is also known as a tetrahedron."
     )
 
+    object Cone : GeometricShape(
+        id = "cone",
+        nameEs = "Cono (Pirámide de base circular)",
+        nameEn = "Cone (Circular-based pyramid)",
+        vertices = 1,
+        edges = 1,
+        faces = 2,
+        descriptionEs = "¡Tiene 1 base plana circular abajo y 1 superficie curva que termina en una sola punta arriba (vértice)! Como un cono de helado o un gorro de fiesta.",
+        descriptionEn = "It has 1 flat circular base at the bottom and 1 curved surface that meets at a single tip (apex) at the top! Just like an ice cream cone or a party hat."
+    )
+
     object Cylinder : GeometricShape(
         id = "cylinder",
         nameEs = "Cilindro",
@@ -134,6 +145,7 @@ fun Explorer3DScreen(
         GeometricShape.TriangularPrism,
         GeometricShape.Pyramid,
         GeometricShape.TriangularPyramid,
+        GeometricShape.Cone,
         GeometricShape.Cylinder
     )
     var selectedShape by remember { mutableStateOf<GeometricShape>(GeometricShape.Cube) }

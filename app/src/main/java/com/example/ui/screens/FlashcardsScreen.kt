@@ -207,27 +207,15 @@ fun FlashcardsScreen(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         // Top Info
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.Start
-        ) {
-            Text(
-                text = if (isSpanish) "Tarjetas Pregunta" else "Flashcards",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 24.sp
-                ),
-                color = GeoNavy
-            )
-            Text(
-                text = if (isSpanish) "¡Toca la tarjeta para ver la respuesta secreta!" else "Tap the card to reveal the secret answer!",
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 13.sp
-                ),
-                color = GeoNavyMuted
-            )
-        }
+        Text(
+            text = if (isSpanish) "¡Toca la tarjeta para ver la respuesta secreta!" else "Tap the card to reveal the secret answer!",
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontWeight = FontWeight.Normal,
+                fontSize = 13.sp
+            ),
+            color = GeoNavyMuted,
+            modifier = Modifier.fillMaxWidth()
+        )
 
         // Card Counter Bar
         Text(
