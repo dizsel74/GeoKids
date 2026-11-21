@@ -30,11 +30,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ui.FeedbackManager
 import com.example.ui.theme.GeoMint
 import com.example.ui.theme.GeoMintBorder
 import com.example.ui.theme.GeoMintCard
@@ -403,6 +405,7 @@ fun QuizScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             // Confirm / Next button
+            val view = LocalView.current
             Button(
                 onClick = {
                     if (!isAnswerSubmitted) {
@@ -415,6 +418,7 @@ fun QuizScreen(
                         }
                     } else {
                         // Go to next question or complete
+                        FeedbackManager.playClick(view)
                         if (currentQuestionIndex < questions.size - 1) {
                             currentQuestionIndex++
                             selectedAnswerIndex = null

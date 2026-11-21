@@ -33,11 +33,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ui.FeedbackManager
 import com.example.ui.theme.GeoMint
 import com.example.ui.theme.GeoMintBorder
 import com.example.ui.theme.GeoMintCard
@@ -307,6 +309,7 @@ fun FlashcardsScreen(
         )
 
         // Bottom Controls Row
+        val view = LocalView.current
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -318,6 +321,7 @@ fun FlashcardsScreen(
             Button(
                 onClick = {
                     if (currentIndex > 0) {
+                        FeedbackManager.playClick(view)
                         currentIndex--
                     }
                 },
@@ -357,6 +361,7 @@ fun FlashcardsScreen(
             Button(
                 onClick = {
                     if (currentIndex < flashcards.size - 1) {
+                        FeedbackManager.playClick(view)
                         currentIndex++
                     }
                 },

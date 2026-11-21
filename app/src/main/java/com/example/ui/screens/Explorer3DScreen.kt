@@ -27,11 +27,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ui.FeedbackManager
 import com.example.ui.components.GeometryWebView
 import com.example.ui.theme.GeoMint
 import com.example.ui.theme.GeoMintBorder
@@ -485,8 +488,14 @@ fun StatCounter(
         label = "stat_secondary_content_color"
     )
 
+    val context = LocalContext.current
+    val view = LocalView.current
+
     Card(
-        onClick = { onToggle(!isSelected) },
+        onClick = {
+            FeedbackManager.vibrateToggle(context, view)
+            onToggle(!isSelected)
+        },
         modifier = modifier,
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(containerColor = containerColor),

@@ -24,11 +24,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.ui.FeedbackManager
 import com.example.ui.theme.GeoMint
 import com.example.ui.theme.GeoMintBorder
 import com.example.ui.theme.GeoMintCard
@@ -279,28 +282,21 @@ fun DictionaryScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Section Header using the correct technical terminology "Polygons" / "Polígonos"
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = if (isSpanish) "Polígonos y Cuerpos" else "Polygons & Solids",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 24.sp
-                ),
-                color = GeoNavy
-            )
-            Text(
-                text = if (isSpanish) "Explora la estructura técnica de los polígonos y la magia de los cuerpos 3D." 
-                       else "Explore the technical structure of polygons and the magic of 3D solids.",
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 13.sp
-                ),
-                color = GeoNavyMuted
-            )
-        }
+        // Descriptive subtitle
+        Text(
+            text = if (isSpanish) "Explora la estructura técnica de los polígonos y la magia de los cuerpos 3D."
+                   else "Explore the technical structure of polygons and the magic of 3D solids.",
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontWeight = FontWeight.Normal,
+                fontSize = 13.sp
+            ),
+            color = GeoNavyMuted,
+            modifier = Modifier.fillMaxWidth()
+        )
 
         // Pill Sub-tab selector
+        val context = LocalContext.current
+        val view = LocalView.current
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -310,7 +306,12 @@ fun DictionaryScreen(
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Button(
-                onClick = { activeSubTab = "2d_polygons" },
+                onClick = {
+                    if (activeSubTab != "2d_polygons") {
+                        FeedbackManager.vibrateToggle(context, view)
+                        activeSubTab = "2d_polygons"
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = if (activeSubTab == "2d_polygons") GeoOrange else Color.Transparent,
                     contentColor = if (activeSubTab == "2d_polygons") Color.White else GeoNavy
@@ -327,7 +328,12 @@ fun DictionaryScreen(
                 )
             }
             Button(
-                onClick = { activeSubTab = "2d_to_3d" },
+                onClick = {
+                    if (activeSubTab != "2d_to_3d") {
+                        FeedbackManager.vibrateToggle(context, view)
+                        activeSubTab = "2d_to_3d"
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = if (activeSubTab == "2d_to_3d") GeoOrange else Color.Transparent,
                     contentColor = if (activeSubTab == "2d_to_3d") Color.White else GeoNavy
@@ -338,7 +344,7 @@ fun DictionaryScreen(
                 contentPadding = PaddingValues(vertical = 10.dp)
             ) {
                 Text(
-                    text = if (isSpanish) "De 2D a 3D" else "Flat to Solid (3D)",
+                    text = if (isSpanish) "De 2D a 3D" else "Flat to 3D Solid",
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 12.5.sp
                 )

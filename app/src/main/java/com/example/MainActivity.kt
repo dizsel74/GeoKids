@@ -70,6 +70,7 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         com.example.ui.TtsManager.shutdown()
+        com.example.ui.FeedbackManager.release()
     }
 }
 
